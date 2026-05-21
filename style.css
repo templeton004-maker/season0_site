@@ -35,5 +35,70 @@ body {
 @media (max-width: 768px) {
   .hero {
     background-position: center center;
+ .countdown-card {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  width: min(900px, 90vw);
+  padding: 28px 34px;
+  text-align: center;
+
+  background: rgba(8, 24, 18, 0.68);
+  border: 1px solid rgba(176, 138, 69, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.eyebrow {
+  margin: 0 0 22px;
+  color: #c8a25d;
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.countdown span {
+  display: block;
+  color: #f4efe4;
+  font-size: clamp(38px, 7vw, 74px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.countdown label {
+  display: block;
+  margin-top: 10px;
+  color: #c8a25d;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.expired {
+  color: #f4efe4;
+  font-size: 28px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .countdown-card {
+    bottom: 5%;
+    padding: 22px 18px;
+  }
+
+  .countdown {
+    gap: 12px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
   }
 }
