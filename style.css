@@ -34,11 +34,11 @@ body {
 
 .countdown-card {
   position: absolute;
-  top: 42%;
+  top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
 
-  width: 92vw;
+  width: 82vw;
   max-width: 900px;
 
   padding: clamp(16px, 4vw, 34px) clamp(10px, 4vw, 38px);
