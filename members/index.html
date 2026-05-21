@@ -1,145 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Season 0 Member Portal</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
-  <title>Season 0 Members</title>
-
-  <script>
-
-    const launchDate =
-      new Date("2026-05-21T18:20:00-05:00").getTime();
-
-    const now =
-      new Date().getTime();
-
-    if (now < launchDate) {
-
-      window.location.href =
-        "https://season0.pro";
-
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080808;
+      color: #f5f0e6;
+      font-family: Georgia, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
 
-  </script>
+    .card {
+      max-width: 720px;
+      padding: 48px;
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      background: rgba(20, 20, 20, 0.85);
+      border-radius: 18px;
+    }
 
-  <link
-    rel="stylesheet"
-    href="../style.css?v=35"
-  />
+    h1 {
+      letter-spacing: 0.14em;
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
 
+    p {
+      font-size: 18px;
+      opacity: 0.85;
+    }
+  </style>
 </head>
 
-<body class="members-body">
-
-  <main class="members-page">
-
-    <header class="members-header">
-
-      <div>
-
-        <p class="members-eyebrow">
-          Season 0
-        </p>
-
-        <h1 class="members-title">
-          Members Portal
-        </h1>
-
-      </div>
-
-      <div class="members-round">
-        Round 1 — Wolf Results
-      </div>
-
-    </header>
-
-    <section class="dashboard-card">
-
-      <div class="section-header">
-
-        <h2>
-          Round 1 Summary
-        </h2>
-
-        <a
-          class="section-link"
-          href="#"
-        >
-          Full Scorecard →
-        </a>
-
-      </div>
-
-      <div class="table-wrap">
-
-        <table>
-
-          <thead>
-
-            <tr>
-              <th>Pos</th>
-              <th>Player</th>
-              <th>Round $</th>
-              <th>Gross</th>
-              <th>Net</th>
-              <th>Wolf W-L</th>
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            <tr>
-              <td>1</td>
-              <td>Kyle Story</td>
-              <td>+16</td>
-              <td>75</td>
-              <td>75</td>
-              <td>4-0</td>
-            </tr>
-
-            <tr>
-              <td>2</td>
-              <td>Michael Jones</td>
-              <td>+2</td>
-              <td>97</td>
-              <td>79</td>
-              <td>2-1</td>
-            </tr>
-
-            <tr>
-              <td>3</td>
-              <td>William Templeton</td>
-              <td>0</td>
-              <td>85</td>
-              <td>81</td>
-              <td>3-2</td>
-            </tr>
-
-            <tr>
-              <td>4</td>
-              <td>John Templeton</td>
-              <td>-18</td>
-              <td>80</td>
-              <td>80</td>
-              <td>0-2</td>
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-  </main>
-
+<body>
+  <div class="card">
+    <h1>GL S0</h1>
+    <p>Season 0 Member Portal</p>
+    <p>If you can see this page, Cloudflare Access is working.</p>
+  </div>
 </body>
 </html>
