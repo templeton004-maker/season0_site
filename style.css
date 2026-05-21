@@ -34,7 +34,7 @@ body {
 
 .countdown-card {
   position: absolute;
-  top: 55%;
+  top: 0%;
   left: 50%;
   transform: translate(-50%, -50%);
 
