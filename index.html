@@ -6,7 +6,7 @@
 
   <title>Season 0</title>
 
-  <link rel="stylesheet" href="./style.css?v=9" />
+  <link rel="stylesheet" href="./style.css?v=10" />
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 
       <div class="countdown" id="countdown">
         <div>
-          <span id="days">000</span>
+          <span id="days">00</span>
           <label>Days</label>
         </div>
         <div>
@@ -32,12 +32,12 @@
           <label>Seconds</label>
         </div>
       </div>
+
+      <a class="access-button" href="/members/">Request Access</a>
     </section>
   </main>
 
   <script>
-    // Update this date whenever you want to change the countdown.
-    // May 21, 2026 at 4:20 PM Central Time = 2026-05-21T16:20:00-05:00
     const targetDate = new Date("2026-05-21T16:20:00-05:00").getTime();
 
     function updateCountdown() {
