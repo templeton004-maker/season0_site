@@ -12,14 +12,28 @@ body {
 body {
   overflow: hidden;
   background: #000;
+  font-family: Georgia, serif;
 }
 
 .hero {
   width: 100vw;
   height: 100vh;
 
-  background-image: url("./assets/images/hero-bg.png");
+  background-image:
+    linear-gradient(
+      rgba(0, 0, 0, 0.28),
+      rgba(0, 0, 0, 0.38)
+    ),
+    url("./assets/images/hero-bg.png");
+
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .hero {
+    background-position: center center;
+  }
 }
