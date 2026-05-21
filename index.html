@@ -13,7 +13,7 @@
 
   <link
     rel="stylesheet"
-    href="./style.css?v=22"
+    href="./style.css?v=30"
   />
 
 </head>
@@ -110,6 +110,27 @@
     updateCountdown();
 
     setInterval(updateCountdown, 1000);
+
+    /* =========================
+       CLOUDFLARE ACCESS CHECK
+    ========================= */
+
+    const accessButton =
+      document.querySelector(".access-button");
+
+    if (
+      document.cookie.includes("CF_Authorization")
+    ) {
+
+      accessButton.textContent =
+        "Enter Clubhouse";
+
+    } else {
+
+      accessButton.textContent =
+        "Request Access";
+
+    }
 
   </script>
 
