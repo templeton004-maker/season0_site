@@ -1,29 +1,6 @@
-* {
-  box-sizing: border-box;
-}
-
 html,
 body {
   margin: 0;
-  min-height: 100%;
-}
-
-body {
-  overflow-x: hidden;
-}
-
-.hero {
-  width: 100%;
-  height: 100vh;
-  background-image: url("assets/images/hero-bg.jpg");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
-/* Mobile optimization */
-@media (max-width: 768px) {
-  .hero {
-    background-position: center center;
-  }
+  height: 100%;
+  background: green;
 }
