@@ -11,9 +11,26 @@
 
   <title>Season 0 Members</title>
 
+  <script>
+
+    const launchDate =
+      new Date("2026-05-21T18:20:00-05:00").getTime();
+
+    const now =
+      new Date().getTime();
+
+    if (now < launchDate) {
+
+      window.location.href =
+        "https://season0.pro";
+
+    }
+
+  </script>
+
   <link
     rel="stylesheet"
-    href="../style.css?v=34"
+    href="../style.css?v=35"
   />
 
 </head>
@@ -25,6 +42,7 @@
     <header class="members-header">
 
       <div>
+
         <p class="members-eyebrow">
           Season 0
         </p>
@@ -32,6 +50,7 @@
         <h1 class="members-title">
           Members Portal
         </h1>
+
       </div>
 
       <div class="members-round">
