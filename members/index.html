@@ -107,9 +107,9 @@
 <body>
   <main class="wrap">
     <section class="header">
-      <div class="kicker">Member Portal</div>
-      <h1>GL S0</h1>
-      <div class="sub">Round 1 Condensed Stats</div>
+      <div class="kicker">Season 0</div>
+      <h1>Round 1 Stats</h1>
+      <div class="sub">Condensed Member View</div>
     </section>
 
     <section class="card">
@@ -135,29 +135,14 @@
       <tbody id="r1Table"></tbody>
     </table>
 
-    <div class="note">Season 0 · Round 1 · Ordered by Wolf Position</div>
+    <div class="note">Player order is based on Round $ totals.</div>
   </main>
 
   <script>
     const r1Data = [
       {
-        playerId: "WT",
-        player: "William Templeton",
-        wolfPosition: 1,
-        roundMoney: 0,
-        total: 85,
-        net: 81,
-        holeWins: 5,
-        holeLosses: 9,
-        holeHalves: 4,
-        birdies: 0,
-        wolfWins: 3,
-        wolfLosses: 2
-      },
-      {
         playerId: "KS",
         player: "Kyle Story",
-        wolfPosition: 2,
         roundMoney: 16,
         total: 75,
         net: 75,
@@ -171,7 +156,6 @@
       {
         playerId: "MJ",
         player: "Michael Jones",
-        wolfPosition: 3,
         roundMoney: 2,
         total: 97,
         net: 79,
@@ -183,9 +167,21 @@
         wolfLosses: 1
       },
       {
+        playerId: "WT",
+        player: "William Templeton",
+        roundMoney: 0,
+        total: 85,
+        net: 81,
+        holeWins: 5,
+        holeLosses: 9,
+        holeHalves: 4,
+        birdies: 0,
+        wolfWins: 3,
+        wolfLosses: 2
+      },
+      {
         playerId: "JT",
         player: "John Templeton",
-        wolfPosition: 4,
         roundMoney: -18,
         total: 80,
         net: 80,
@@ -198,7 +194,7 @@
       }
     ];
 
-    const ordered = r1Data.sort((a, b) => a.wolfPosition - b.wolfPosition);
+    const ordered = [...r1Data].sort((a, b) => b.roundMoney - a.roundMoney);
 
     function moneyClass(value) {
       if (value > 0) return "money-positive";
@@ -214,7 +210,7 @@
 
     document.getElementById("r1Table").innerHTML = ordered.map(p => `
       <tr>
-        <td>${p.player}</td>
+        <td>${p.player} (${p.playerId})</td>
         <td class="${moneyClass(p.roundMoney)}">${moneyText(p.roundMoney)}</td>
         <td>${p.total}</td>
         <td>${p.net}</td>
