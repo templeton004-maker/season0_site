@@ -191,14 +191,14 @@ body {
   background:
     radial-gradient(
       circle at top,
-      rgba(120, 130, 180, 0.12),
+      rgba(120, 130, 180, 0.06),
       transparent 35%
     ),
     linear-gradient(
       135deg,
-      #111827,
-      #1e293b 55%,
-      #0f172a
+      rgba(17,24,39,0.82),
+      rgba(30,41,59,0.72) 55%,
+      rgba(15,23,42,0.86)
     );
 
   color: #f8f4ec;
@@ -245,7 +245,7 @@ body {
 }
 
 .dashboard-card {
-  background: rgba(17, 24, 39, 0.76);
+  background: rgba(30, 41, 59, 0.82);
   border: 1px solid rgba(203, 184, 157, 0.16);
   padding: 28px;
   backdrop-filter: blur(10px);
