@@ -34,6 +34,7 @@ body {
 }
 
 /* Main centered countdown container */
+
 .countdown-card {
   position: absolute;
 
@@ -56,6 +57,7 @@ body {
 }
 
 /* Small text above countdown */
+
 .eyebrow {
   margin: 0 0 26px;
 
@@ -69,6 +71,7 @@ body {
 }
 
 /* Countdown row */
+
 .countdown {
   display: flex;
 
@@ -80,11 +83,13 @@ body {
 }
 
 /* Each countdown box */
+
 .countdown div {
   min-width: 120px;
 }
 
 /* Large countdown numbers */
+
 .countdown span {
   display: block;
 
@@ -100,6 +105,7 @@ body {
 }
 
 /* Labels under numbers */
+
 .countdown label {
   display: block;
 
@@ -115,6 +121,7 @@ body {
 }
 
 /* Expired timer text */
+
 .expired {
   color: #f4efe4;
 
@@ -126,10 +133,16 @@ body {
 }
 
 /* Request access button */
-.access-button {
-  display: inline-block;
 
-  margin-top: 34px;
+.access-button {
+  position: absolute;
+
+  left: 50%;
+  bottom: 14%;
+
+  transform: translateX(-50%);
+
+  display: inline-block;
 
   padding: 13px 28px;
 
@@ -150,7 +163,6 @@ body {
   transition: all 0.25s ease;
 }
 
-/* Button hover effect */
 .access-button:hover {
   background: rgba(200, 162, 93, 0.22);
 
@@ -158,6 +170,7 @@ body {
 }
 
 /* Mobile optimization */
+
 @media (max-width: 768px) {
 
   .hero {
@@ -201,8 +214,10 @@ body {
   }
 
   .access-button {
-    margin-top: 28px;
+    bottom: 10%;
 
-    width: 100%;
+    width: 78vw;
+
+    text-align: center;
   }
 }
