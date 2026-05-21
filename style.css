@@ -16,6 +16,7 @@ body {
 }
 
 .hero {
+  position: relative;
   width: 100vw;
   height: 100vh;
 
@@ -31,52 +32,56 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Mobile optimization */
-@media (max-width: 768px) {
-  .hero {
-    background-position: center center;
- .countdown-card {
+.countdown-card {
   position: absolute;
+  top: 50%;
   left: 50%;
-  bottom: 8%;
-  transform: translateX(-50%);
-  width: min(900px, 90vw);
-  padding: 28px 34px;
+
+  transform: translate(-50%, -50%);
+
+  width: min(1100px, 92vw);
+  padding: 42px 48px;
   text-align: center;
 
-  background: rgba(8, 24, 18, 0.68);
-  border: 1px solid rgba(176, 138, 69, 0.45);
-  backdrop-filter: blur(8px);
+  background: rgba(10, 18, 14, 0.42);
+  border: 1px solid rgba(176, 138, 69, 0.32);
+  backdrop-filter: blur(10px);
 }
 
 .eyebrow {
-  margin: 0 0 22px;
+  margin: 0 0 26px;
   color: #c8a25d;
-  font-size: 13px;
-  letter-spacing: 0.28em;
+  font-size: 12px;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
 }
 
 .countdown {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(18px, 4vw, 54px);
+}
+
+.countdown div {
+  min-width: 120px;
 }
 
 .countdown span {
   display: block;
   color: #f4efe4;
-  font-size: clamp(38px, 7vw, 74px);
-  line-height: 1;
+  font-size: clamp(52px, 9vw, 118px);
   font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0.04em;
 }
 
 .countdown label {
   display: block;
-  margin-top: 10px;
+  margin-top: 16px;
   color: #c8a25d;
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
 }
 
@@ -88,17 +93,37 @@ body {
 }
 
 @media (max-width: 768px) {
-  .countdown-card {
-    bottom: 5%;
-    padding: 22px 18px;
+  .hero {
+    background-position: center center;
   }
 
-  .countdown {
-    gap: 12px;
+  .countdown-card {
+    width: 92vw;
+    padding: 26px 16px;
   }
 
   .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.18em;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    margin-bottom: 22px;
+  }
+
+  .countdown {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 26px 10px;
+  }
+
+  .countdown div {
+    min-width: auto;
+  }
+
+  .countdown span {
+    font-size: clamp(42px, 12vw, 72px);
+  }
+
+  .countdown label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
   }
 }
