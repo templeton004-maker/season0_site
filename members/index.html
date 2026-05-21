@@ -3,393 +3,269 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
   <title>Season 0 Member Portal</title>
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="SEASON 0">
-  <meta property="og:description" content="Round 1 Member Portal">
-  <meta property="og:image" content="https://season0.pro/preview.jpg">
-  <meta property="og:url" content="https://season0.pro/member.html">
-  <meta property="og:type" content="website">
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="SEASON 0">
-  <meta name="twitter:description" content="Round 1 Member Portal">
-  <meta name="twitter:image" content="https://season0.pro/preview.jpg">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      min-height: 100vh;
-
-      background:
-        linear-gradient(rgba(3,7,15,.82), rgba(3,7,15,.92)),
-        url("/preview.jpg") center/cover no-repeat;
-
+      background: #06101f;
       color: #dce9ff;
       font-family: Georgia, serif;
     }
 
     .wrap {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 48px 20px 80px;
+      padding: 36px 18px 70px;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 28px;
     }
 
     .kicker {
       color: #5ea7ff;
-      letter-spacing: .24em;
+      letter-spacing: .22em;
       text-transform: uppercase;
       font-size: 12px;
-      margin-bottom: 12px;
     }
 
     h1 {
-      margin: 0;
-      font-size: clamp(48px, 8vw, 92px);
-      letter-spacing: .14em;
-      font-weight: 700;
+      margin: 10px 0 4px;
+      font-size: clamp(42px, 7vw, 82px);
+      letter-spacing: .12em;
     }
 
     .sub {
-      margin-top: 14px;
-      opacity: .82;
+      opacity: .8;
       font-size: 18px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 34px;
-    }
-
     .card {
-      background: rgba(8,14,28,.82);
-
-      border: 1px solid rgba(94,167,255,.28);
-
+      background: rgba(8,14,28,.88);
+      border: 1px solid rgba(94,167,255,.3);
       border-radius: 18px;
-
-      padding: 24px;
-
-      backdrop-filter: blur(10px);
-
-      box-shadow:
-        0 10px 30px rgba(0,0,0,.35),
-        inset 0 0 0 1px rgba(255,255,255,.02);
-    }
-
-    .label {
-      color: #5ea7ff;
-      text-transform: uppercase;
-      letter-spacing: .16em;
-      font-size: 11px;
-      margin-bottom: 10px;
-    }
-
-    .stat {
-      font-size: 42px;
-      font-weight: bold;
-    }
-
-    .chart-card {
-      background: rgba(8,14,28,.82);
-
-      border: 1px solid rgba(94,167,255,.28);
-
-      border-radius: 18px;
-
-      padding: 26px;
-
-      margin-bottom: 32px;
-
-      backdrop-filter: blur(10px);
-
-      box-shadow:
-        0 10px 30px rgba(0,0,0,.35),
-        inset 0 0 0 1px rgba(255,255,255,.02);
+      padding: 22px;
+      margin-bottom: 26px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.35);
     }
 
     .chart-title {
       color: #5ea7ff;
       text-transform: uppercase;
       letter-spacing: .14em;
-      font-size: 14px;
-      margin-bottom: 20px;
+      font-size: 13px;
+      margin-bottom: 18px;
     }
 
     canvas {
-      max-height: 360px;
+      max-height: 340px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-
-      background: rgba(8,14,28,.82);
-
-      border: 1px solid rgba(94,167,255,.28);
-
-      border-radius: 18px;
-
       overflow: hidden;
+      border-radius: 18px;
+      background: rgba(8,14,28,.88);
+      border: 1px solid rgba(94,167,255,.3);
+    }
 
-      backdrop-filter: blur(10px);
-
-      box-shadow:
-        0 10px 30px rgba(0,0,0,.35),
-        inset 0 0 0 1px rgba(255,255,255,.02);
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      text-align: left;
     }
 
     th {
-      background: rgba(255,255,255,.03);
-
       color: #5ea7ff;
-
       text-transform: uppercase;
-
-      letter-spacing: .14em;
-
+      letter-spacing: .12em;
       font-size: 11px;
-    }
-
-    th,
-    td {
-      padding: 18px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.04);
     }
 
     tr:last-child td {
       border-bottom: none;
     }
 
+    .money-positive { color: #7dffb2; font-weight: bold; }
+    .money-negative { color: #ff7d7d; font-weight: bold; }
+    .money-even { color: #dce9ff; font-weight: bold; }
+
     .note {
       text-align: center;
-      margin-top: 26px;
-      opacity: .68;
-      font-size: 14px;
-    }
-
-    .portal-button {
-      display: inline-block;
-
-      margin-top: 24px;
-
-      padding: 14px 24px;
-
-      border-radius: 12px;
-
-      text-decoration: none;
-
-      color: #dce9ff;
-
-      border: 1px solid rgba(94,167,255,.35);
-
-      background: rgba(94,167,255,.08);
-
-      transition: .2s ease;
-    }
-
-    .portal-button:hover {
-      background: rgba(94,167,255,.16);
-      transform: translateY(-2px);
+      margin-top: 22px;
+      opacity: .65;
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
-
   <main class="wrap">
-
     <section class="header">
-
-      <div class="kicker">
-        Member Portal
-      </div>
-
-      <h1>
-        GL S0
-      </h1>
-
-      <div class="sub">
-        Round 1 Statistics
-      </div>
-
+      <div class="kicker">Member Portal</div>
+      <h1>GL S0</h1>
+      <div class="sub">Round 1 Condensed Stats</div>
     </section>
 
-    <section class="grid">
-
-      <div class="card">
-        <div class="label">Round</div>
-        <div class="stat">R1</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Format</div>
-        <div class="stat">Wolf</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Status</div>
-        <div class="stat">Live</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Season</div>
-        <div class="stat">0</div>
-      </div>
-
-    </section>
-
-    <section class="chart-card">
-
-      <div class="chart-title">
-        R1 Points Chart
-      </div>
-
+    <section class="card">
+      <div class="chart-title">R1 Round $</div>
       <canvas id="r1Chart"></canvas>
-
     </section>
 
     <table>
-
       <thead>
         <tr>
           <th>Player</th>
-          <th>Score</th>
-          <th>Points</th>
-          <th>Status</th>
+          <th>Round $</th>
+          <th>Total</th>
+          <th>Net</th>
+          <th>Hole Wins</th>
+          <th>Hole Losses</th>
+          <th>Hole Halves</th>
+          <th>Birdies</th>
+          <th>Wolf Wins</th>
+          <th>Wolf Losses</th>
         </tr>
       </thead>
-
-      <tbody>
-
-        <tr>
-          <td>John</td>
-          <td>-</td>
-          <td>0</td>
-          <td>Pending</td>
-        </tr>
-
-        <tr>
-          <td>Mike</td>
-          <td>-</td>
-          <td>0</td>
-          <td>Pending</td>
-        </tr>
-
-        <tr>
-          <td>Will</td>
-          <td>-</td>
-          <td>0</td>
-          <td>Pending</td>
-        </tr>
-
-        <tr>
-          <td>Matt</td>
-          <td>-</td>
-          <td>0</td>
-          <td>Pending</td>
-        </tr>
-
-      </tbody>
-
+      <tbody id="r1Table"></tbody>
     </table>
 
-    <div class="note">
-      Season 0 · Member Access Confirmed
-    </div>
-
+    <div class="note">Season 0 · Round 1 · Ordered by Wolf Position</div>
   </main>
 
   <script>
-    const ctx = document.getElementById("r1Chart");
+    const r1Data = [
+      {
+        playerId: "WT",
+        player: "William Templeton",
+        wolfPosition: 1,
+        roundMoney: 0,
+        total: 85,
+        net: 81,
+        holeWins: 5,
+        holeLosses: 9,
+        holeHalves: 4,
+        birdies: 0,
+        wolfWins: 3,
+        wolfLosses: 2
+      },
+      {
+        playerId: "KS",
+        player: "Kyle Story",
+        wolfPosition: 2,
+        roundMoney: 16,
+        total: 75,
+        net: 75,
+        holeWins: 8,
+        holeLosses: 6,
+        holeHalves: 4,
+        birdies: 3,
+        wolfWins: 4,
+        wolfLosses: 0
+      },
+      {
+        playerId: "MJ",
+        player: "Michael Jones",
+        wolfPosition: 3,
+        roundMoney: 2,
+        total: 97,
+        net: 79,
+        holeWins: 10,
+        holeLosses: 4,
+        holeHalves: 4,
+        birdies: 0,
+        wolfWins: 2,
+        wolfLosses: 1
+      },
+      {
+        playerId: "JT",
+        player: "John Templeton",
+        wolfPosition: 4,
+        roundMoney: -18,
+        total: 80,
+        net: 80,
+        holeWins: 5,
+        holeLosses: 9,
+        holeHalves: 4,
+        birdies: 1,
+        wolfWins: 0,
+        wolfLosses: 3
+      }
+    ];
 
-    new Chart(ctx, {
+    const ordered = r1Data.sort((a, b) => a.wolfPosition - b.wolfPosition);
+
+    function moneyClass(value) {
+      if (value > 0) return "money-positive";
+      if (value < 0) return "money-negative";
+      return "money-even";
+    }
+
+    function moneyText(value) {
+      if (value > 0) return "+$" + value;
+      if (value < 0) return "-$" + Math.abs(value);
+      return "$0";
+    }
+
+    document.getElementById("r1Table").innerHTML = ordered.map(p => `
+      <tr>
+        <td>${p.player}</td>
+        <td class="${moneyClass(p.roundMoney)}">${moneyText(p.roundMoney)}</td>
+        <td>${p.total}</td>
+        <td>${p.net}</td>
+        <td>${p.holeWins}</td>
+        <td>${p.holeLosses}</td>
+        <td>${p.holeHalves}</td>
+        <td>${p.birdies}</td>
+        <td>${p.wolfWins}</td>
+        <td>${p.wolfLosses}</td>
+      </tr>
+    `).join("");
+
+    new Chart(document.getElementById("r1Chart"), {
       type: "bar",
-
       data: {
-        labels: ["John", "Mike", "Will", "Matt"],
-
+        labels: ordered.map(p => p.player),
         datasets: [{
-          label: "R1 Points",
-
-          data: [0, 0, 0, 0],
-
-          backgroundColor: [
-            "rgba(94,167,255,.78)",
-            "rgba(94,167,255,.68)",
-            "rgba(94,167,255,.58)",
-            "rgba(94,167,255,.48)"
-          ],
-
-          borderColor: [
-            "#7bb7ff",
-            "#7bb7ff",
-            "#7bb7ff",
-            "#7bb7ff"
-          ],
-
+          label: "Round $",
+          data: ordered.map(p => p.roundMoney),
+          backgroundColor: ordered.map(p =>
+            p.roundMoney >= 0 ? "rgba(94,167,255,.72)" : "rgba(255,125,125,.72)"
+          ),
+          borderColor: ordered.map(p =>
+            p.roundMoney >= 0 ? "#7bb7ff" : "#ff9b9b"
+          ),
           borderWidth: 2,
-
           borderRadius: 8
         }]
       },
-
       options: {
         responsive: true,
-
         plugins: {
           legend: {
-            labels: {
-              color: "#dce9ff"
-            }
+            labels: { color: "#dce9ff" }
           }
         },
-
         scales: {
-
           x: {
-            ticks: {
-              color: "#dce9ff"
-            },
-
-            grid: {
-              color: "rgba(255,255,255,.05)"
-            }
+            ticks: { color: "#dce9ff" },
+            grid: { color: "rgba(255,255,255,.05)" }
           },
-
           y: {
-            beginAtZero: true,
-
             ticks: {
-              color: "#dce9ff"
+              color: "#dce9ff",
+              callback: value => "$" + value
             },
-
-            grid: {
-              color: "rgba(255,255,255,.05)"
-            }
+            grid: { color: "rgba(255,255,255,.06)" }
           }
-
         }
       }
     });
   </script>
-
 </body>
 </html>
