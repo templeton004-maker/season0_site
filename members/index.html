@@ -3,139 +3,245 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Season 0 Member Portal</title>
+  <title>Season 0 — Clubhouse</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../styles.css?v=36" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0;
-      background: #06101f;
-      color: #dce9ff;
-      font-family: Georgia, serif;
+    :root {
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --members-bg-top:    #08111e;
+      --members-bg-bottom: #050d18;
+      --members-surface:   rgba(8, 14, 26, 0.90);
+      --members-border:    rgba(200, 162, 93, 0.18);
+      --members-border-th: rgba(200, 162, 93, 0.28);
+      --members-rule:      rgba(200, 162, 93, 0.10);
+      --pos-color: #7ecf9e;
+      --neg-color: #d97b7b;
+      --neu-color: var(--color-text-primary);
     }
 
-    .wrap {
-      max-width: 1100px;
+    body.members {
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(200,162,93,0.06) 0%, transparent 60%),
+        linear-gradient(175deg, var(--members-bg-top) 0%, var(--members-bg-bottom) 100%);
+      min-height: 100vh;
+      font-family: var(--font-serif);
+    }
+
+    .members-wrap {
+      width: min(1100px, 92vw);
       margin: 0 auto;
-      padding: 36px 18px 70px;
+      padding: 56px 0 90px;
     }
 
-    .header {
+    .members-header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 52px;
+      position: relative;
     }
 
-    .kicker {
-      color: #5ea7ff;
-      letter-spacing: .22em;
+    .members-header::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 1px;
+      background: var(--color-gold);
+      margin: 28px auto 0;
+      opacity: 0.5;
+    }
+
+    .members-kicker {
+      display: inline-block;
+      color: var(--color-gold);
+      font-size: 10px;
+      letter-spacing: 0.38em;
       text-transform: uppercase;
-      font-size: 12px;
+      margin-bottom: 16px;
     }
 
-    h1 {
-      margin: 10px 0 4px;
-      font-size: clamp(42px, 7vw, 82px);
-      letter-spacing: .12em;
+    .members-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--color-text-primary);
+      margin: 0 0 10px;
+      line-height: 1;
     }
 
-    .sub {
-      opacity: .8;
-      font-size: 18px;
-    }
-
-    .card {
-      background: rgba(8,14,28,.88);
-      border: 1px solid rgba(94,167,255,.3);
-      border-radius: 18px;
-      padding: 22px;
-      margin-bottom: 26px;
-      box-shadow: 0 12px 32px rgba(0,0,0,.35);
-    }
-
-    .chart-title {
-      color: #5ea7ff;
-      text-transform: uppercase;
-      letter-spacing: .14em;
+    .members-sub {
+      color: var(--color-text-secondary);
       font-size: 13px;
-      margin-bottom: 18px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      opacity: 0.75;
+    }
+
+    .section-label {
+      color: var(--color-gold);
+      font-size: 10px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      margin: 0 0 20px;
+    }
+
+    .members-card {
+      background: var(--members-surface);
+      border: 1px solid var(--members-border);
+      padding: 32px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .members-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 40px; height: 40px;
+      border-top: 1px solid rgba(200,162,93,0.40);
+      border-left: 1px solid rgba(200,162,93,0.40);
+    }
+
+    .members-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 40px; height: 40px;
+      border-bottom: 1px solid rgba(200,162,93,0.40);
+      border-right: 1px solid rgba(200,162,93,0.40);
     }
 
     canvas {
-      max-height: 340px;
+      max-height: 300px;
     }
 
-    table {
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .scores-table {
       width: 100%;
       border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 18px;
-      background: rgba(8,14,28,.88);
-      border: 1px solid rgba(94,167,255,.3);
+      min-width: 720px;
+      font-family: var(--font-serif);
     }
 
-    th, td {
-      padding: 14px;
-      border-bottom: 1px solid rgba(255,255,255,.07);
+    .scores-table thead tr {
+      border-bottom: 1px solid var(--members-border-th);
+    }
+
+    .scores-table th {
+      padding: 12px 14px;
       text-align: left;
-    }
-
-    th {
-      color: #5ea7ff;
+      color: var(--color-gold);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
-      letter-spacing: .12em;
-      font-size: 11px;
-      background: rgba(255,255,255,.04);
     }
 
-    tr:last-child td {
+    .scores-table td {
+      padding: 15px 14px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      border-bottom: 1px solid var(--members-rule);
+    }
+
+    .scores-table tbody tr:last-child td {
       border-bottom: none;
     }
 
-    .money-positive { color: #7dffb2; font-weight: bold; }
-    .money-negative { color: #ff7d7d; font-weight: bold; }
-    .money-even { color: #dce9ff; font-weight: bold; }
+    .scores-table tbody tr {
+      transition: background 0.25s ease;
+    }
 
-    .note {
+    .scores-table tbody tr:hover {
+      background: rgba(200, 162, 93, 0.04);
+    }
+
+    .player-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+
+    .player-id {
+      display: inline-block;
+      margin-left: 6px;
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
+    }
+
+    .money-positive { color: var(--pos-color); font-weight: 400; }
+    .money-negative { color: var(--neg-color); font-weight: 400; }
+    .money-even     { color: var(--neu-color); font-weight: 400; }
+
+    .members-note {
       text-align: center;
-      margin-top: 22px;
-      opacity: .65;
-      font-size: 13px;
+      margin-top: 28px;
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
+
+    @media (max-width: 768px) {
+      .members-wrap  { padding: 32px 0 60px; }
+      .members-card  { padding: 20px 16px; }
+      .members-h1    { font-size: 52px; }
     }
   </style>
 </head>
 
-<body>
-  <main class="wrap">
-    <section class="header">
-      <div class="kicker">Season 0</div>
-      <h1>Round 1 Stats</h1>
-      <div class="sub">Condensed Member View</div>
-    </section>
+<body class="members">
+  <main class="members-wrap">
 
-    <section class="card">
-      <div class="chart-title">R1 Round $</div>
+    <header class="members-header">
+      <div class="members-kicker">Season 0</div>
+      <h1 class="members-h1">Round 1</h1>
+      <div class="members-sub">Clubhouse Standings</div>
+    </header>
+
+    <section class="members-card">
+      <p class="section-label">Round $</p>
       <canvas id="r1Chart"></canvas>
     </section>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th>Round $</th>
-          <th>Total</th>
-          <th>Net</th>
-          <th>Hole Wins</th>
-          <th>Hole Losses</th>
-          <th>Hole Halves</th>
-          <th>Birdies</th>
-          <th>Wolf Wins</th>
-          <th>Wolf Losses</th>
-        </tr>
-      </thead>
-      <tbody id="r1Table"></tbody>
-    </table>
+    <section class="members-card">
+      <p class="section-label">Full Scorecard</p>
+      <div class="table-wrap">
+        <table class="scores-table">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Round $</th>
+              <th>Total</th>
+              <th>Net</th>
+              <th>Hole Wins</th>
+              <th>Hole Losses</th>
+              <th>Halves</th>
+              <th>Birdies</th>
+              <th>Wolf W</th>
+              <th>Wolf L</th>
+            </tr>
+          </thead>
+          <tbody id="r1Table"></tbody>
+        </table>
+      </div>
+    </section>
 
-    <div class="note">Player order is based on Round $ totals.</div>
+    <p class="members-note">Ranked by Round $</p>
+
   </main>
 
   <script>
@@ -196,21 +302,20 @@
 
     const ordered = [...r1Data].sort((a, b) => b.roundMoney - a.roundMoney);
 
-    function moneyClass(value) {
-      if (value > 0) return "money-positive";
-      if (value < 0) return "money-negative";
-      return "money-even";
+    function moneyClass(v) {
+      return v > 0 ? "money-positive" : v < 0 ? "money-negative" : "money-even";
     }
 
-    function moneyText(value) {
-      if (value > 0) return "+$" + value;
-      if (value < 0) return "-$" + Math.abs(value);
-      return "$0";
+    function moneyText(v) {
+      return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0";
     }
 
     document.getElementById("r1Table").innerHTML = ordered.map(p => `
       <tr>
-        <td>${p.player} (${p.playerId})</td>
+        <td>
+          <span class="player-name">${p.player}</span>
+          <span class="player-id">${p.playerId}</span>
+        </td>
         <td class="${moneyClass(p.roundMoney)}">${moneyText(p.roundMoney)}</td>
         <td>${p.total}</td>
         <td>${p.net}</td>
@@ -231,33 +336,37 @@
           label: "Round $",
           data: ordered.map(p => p.roundMoney),
           backgroundColor: ordered.map(p =>
-            p.roundMoney >= 0 ? "rgba(94,167,255,.72)" : "rgba(255,125,125,.72)"
+            p.roundMoney >= 0
+              ? "rgba(200, 162, 93, 0.30)"
+              : "rgba(217, 123, 123, 0.30)"
           ),
           borderColor: ordered.map(p =>
-            p.roundMoney >= 0 ? "#7bb7ff" : "#ff9b9b"
+            p.roundMoney >= 0 ? "rgba(200,162,93,0.85)" : "rgba(217,123,123,0.85)"
           ),
-          borderWidth: 2,
-          borderRadius: 8
+          borderWidth: 1,
+          borderRadius: 2
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            labels: { color: "#dce9ff" }
-          }
+          legend: { display: false }
         },
         scales: {
           x: {
-            ticks: { color: "#dce9ff" },
-            grid: { color: "rgba(255,255,255,.05)" }
+            ticks: {
+              color: "rgba(244,239,228,0.60)",
+              font: { family: "Georgia, serif", size: 12 }
+            },
+            grid: { color: "rgba(200,162,93,0.06)" }
           },
           y: {
             ticks: {
-              color: "#dce9ff",
-              callback: value => "$" + value
+              color: "rgba(244,239,228,0.60)",
+              font: { family: "Georgia, serif", size: 11 },
+              callback: v => (v >= 0 ? "+$" : "-$") + Math.abs(v)
             },
-            grid: { color: "rgba(255,255,255,.06)" }
+            grid: { color: "rgba(200,162,93,0.06)" }
           }
         }
       }
