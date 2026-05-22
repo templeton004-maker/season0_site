@@ -13,7 +13,7 @@
 
   <link
     rel="stylesheet"
-    href="./style.css?v=35"
+    href="./styles.css?v=36"
   />
 
 </head>
@@ -30,24 +30,24 @@
 
       <div class="countdown" id="countdown">
 
-        <div>
-          <span id="days">00</span>
-          <label>Days</label>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="days">00</span>
+          <label class="countdown__label">Days</label>
         </div>
 
-        <div>
-          <span id="hours">00</span>
-          <label>Hours</label>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="hours">00</span>
+          <label class="countdown__label">Hours</label>
         </div>
 
-        <div>
-          <span id="minutes">00</span>
-          <label>Minutes</label>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="minutes">00</span>
+          <label class="countdown__label">Minutes</label>
         </div>
 
-        <div>
-          <span id="seconds">00</span>
-          <label>Seconds</label>
+        <div class="countdown__unit">
+          <span class="countdown__number" id="seconds">00</span>
+          <label class="countdown__label">Seconds</label>
         </div>
 
       </div>
@@ -55,7 +55,7 @@
     </section>
 
     <a
-      class="access-button"
+      class="access-btn"
       href="https://season0.pro/members/"
     >
       Request Access
@@ -115,20 +115,16 @@
        CLOUDFLARE ACCESS CHECK
     ========================= */
 
-    const accessButton =
-      document.querySelector(".access-button");
+    const accessBtn =
+      document.querySelector(".access-btn");
 
-    if (
-      document.cookie.includes("CF_Authorization")
-    ) {
+    if (document.cookie.includes("CF_Authorization")) {
 
-      accessButton.textContent =
-        "Return to Clubhouse";
+      accessBtn.textContent = "Return to Clubhouse";
 
     } else {
 
-      accessButton.textContent =
-        "Request Access";
+      accessBtn.textContent = "Request Access";
 
     }
 
