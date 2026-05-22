@@ -1,4 +1,86 @@
-* {
+/* ============================================================
+   GOLF COMPETITION — DESIGN SYSTEM
+   styles.css
+   
+   Structure:
+   1. Tokens (colors, type, spacing, motion)
+   2. Reset & Base
+   3. Typography utilities
+   4. Layout utilities
+   5. Hero page
+   6. Countdown
+   7. Members portal
+   8. Table
+   9. Responsive
+   ============================================================ */
+
+
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+
+:root {
+
+  /* --- Color palette --- */
+  --color-bg:            #000;
+  --color-surface:       rgba(17, 24, 35, 0.82);
+  --color-surface-hover: rgba(148, 163, 184, 0.08);
+
+  --color-gold:          #c8a25d;
+  --color-gold-dim:      rgba(200, 162, 93, 0.22);
+  --color-gold-border:   rgba(200, 162, 93, 0.30);
+  --color-gold-border-strong: rgba(200, 162, 93, 0.72);
+
+  --color-text-primary:  #f4efe4;
+  --color-text-secondary: #c8a25d;
+  --color-text-muted:    rgba(248, 244, 236, 0.55);
+
+  --color-border:        rgba(203, 184, 157, 0.16);
+  --color-border-strong: rgba(203, 184, 157, 0.22);
+  --color-border-subtle: rgba(248, 244, 236, 0.07);
+
+  /* --- Typography --- */
+  --font-serif: Georgia, 'Times New Roman', serif;
+
+  --text-label:  clamp(6px,  1.8vw, 11px);
+  --text-eyebrow: clamp(8px, 2.2vw, 12px);
+  --text-body:   15px;
+  --text-h2:     24px;
+  --text-hero:   clamp(34px, 6vw, 62px);
+
+  --tracking-wide:   0.18em;
+  --tracking-wider:  0.28em;
+  --tracking-number: 0.01em;
+
+  /* --- Spacing --- */
+  --space-xs:  8px;
+  --space-sm:  14px;
+  --space-md:  24px;
+  --space-lg:  34px;
+  --space-xl:  42px;
+  --space-2xl: 80px;
+
+  --card-pad: clamp(16px, 4vw, 34px) clamp(10px, 4vw, 38px);
+  --card-pad-sm: 18px;
+  --card-pad-md: 28px;
+
+  /* --- Borders & blur --- */
+  --radius-none: 0;
+  --blur-card:   blur(8px);
+  --blur-heavy:  blur(10px);
+
+  /* --- Motion --- */
+  --ease-default: 0.25s ease;
+}
+
+
+/* ============================================================
+   2. RESET & BASE
+   ============================================================ */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -11,15 +93,123 @@ body {
 
 body {
   overflow-x: hidden;
-
-  background: #000;
-
-  font-family: Georgia, serif;
+  background: var(--color-bg);
+  font-family: var(--font-serif);
+  color: var(--color-text-primary);
 }
+
+
+/* ============================================================
+   3. TYPOGRAPHY UTILITIES
+   ============================================================ */
+
+/* Eyebrow / label — small all-caps gold line above headings */
+.eyebrow {
+  margin: 0 0 clamp(12px, 3vw, 22px);
+  color: var(--color-text-secondary);
+  font-size: var(--text-eyebrow);
+  font-weight: 400;
+  letter-spacing: clamp(0.14em, 0.8vw, 0.30em);
+  text-transform: uppercase;
+}
+
+/* Section-level eyebrow (tighter margin, used inside cards) */
+.eyebrow--sm {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: var(--tracking-wider);
+}
+
+/* Page title */
+.page-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-hero);
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* Section heading inside cards */
+.section-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-h2);
+  font-weight: 400;
+}
+
+/* Subtle label — round / date metadata */
+.meta-label {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+}
+
+/* Expired countdown state */
+.expired {
+  color: var(--color-text-primary);
+  font-size: clamp(18px, 6vw, 28px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
+   4. LAYOUT UTILITIES
+   ============================================================ */
+
+/* Centred, max-width page container */
+.page-wrap {
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+  padding: var(--space-xl) 0 var(--space-2xl);
+}
+
+/* Flex row that stretches end-to-end, wraps on mobile */
+.row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.row--space-between {
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.row--center {
+  justify-content: center;
+  align-items: center;
+}
+
+/* Horizontal rule — gold tint */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border-strong);
+  margin: var(--space-md) 0;
+}
+
+/* Ghost / text link in gold */
+.link-gold {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color var(--ease-default);
+}
+
+.link-gold:hover {
+  color: var(--color-text-primary);
+}
+
+
+/* ============================================================
+   5. HERO PAGE
+   ============================================================ */
 
 .hero {
   position: relative;
-
   width: 100vw;
   min-height: 100dvh;
 
@@ -35,159 +225,94 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Countdown container */
+/* CTA button floating at bottom of hero */
+.access-btn {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+
+  display: inline-block;
+  padding: 12px 22px;
+
+  color: var(--color-text-primary);
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: clamp(9px, 2.2vw, 11px);
+  letter-spacing: clamp(0.16em, 0.7vw, 0.28em);
+  font-family: var(--font-serif);
+
+  border: 1px solid var(--color-gold-border-strong);
+  background: rgba(31, 58, 45, 0.48);
+
+  transition: background var(--ease-default), border-color var(--ease-default);
+}
+
+.access-btn:hover {
+  background: var(--color-gold-dim);
+  border-color: rgba(244, 239, 228, 0.85);
+}
+
+
+/* ============================================================
+   6. COUNTDOWN
+   ============================================================ */
 
 .countdown-card {
   position: absolute;
-
   top: 38%;
   left: 50%;
-
   transform: translate(-50%, -50%);
 
   width: 92vw;
   max-width: 900px;
-
-  padding:
-    clamp(16px, 4vw, 34px)
-    clamp(10px, 4vw, 38px);
+  padding: var(--card-pad);
 
   text-align: center;
-
   background: rgba(10, 18, 14, 0.40);
-
-  border: 1px solid rgba(176, 138, 69, 0.30);
-
-  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-gold-border);
+  backdrop-filter: var(--blur-card);
 }
-
-/* Small text above timer */
-
-.eyebrow {
-  margin: 0 0 clamp(12px, 3vw, 22px);
-
-  color: #c8a25d;
-
-  font-size: clamp(8px, 2.2vw, 12px);
-
-  letter-spacing: clamp(0.14em, 0.8vw, 0.30em);
-
-  text-transform: uppercase;
-}
-
-/* Countdown row */
 
 .countdown {
   display: flex;
-
   justify-content: center;
-
   align-items: flex-start;
-
   gap: clamp(4px, 2.3vw, 34px);
-
   white-space: nowrap;
 }
 
-/* Individual countdown blocks */
-
-.countdown div {
+.countdown__unit {
   flex: 1 1 0;
-
   min-width: 0;
 }
 
-/* Countdown numbers */
-
-.countdown span {
+.countdown__number {
   display: block;
-
-  color: #f4efe4;
-
+  color: var(--color-text-primary);
   font-size: clamp(30px, 11vw, 104px);
-
   font-weight: 400;
-
   line-height: 0.9;
-
-  letter-spacing: 0.01em;
+  letter-spacing: var(--tracking-number);
 }
 
-/* Labels */
-
-.countdown label {
+.countdown__label {
   display: block;
-
   margin-top: clamp(7px, 2vw, 14px);
-
-  color: #c8a25d;
-
-  font-size: clamp(6px, 1.8vw, 10px);
-
+  color: var(--color-text-secondary);
+  font-size: var(--text-label);
   letter-spacing: clamp(0.08em, 0.6vw, 0.26em);
-
   text-transform: uppercase;
 }
 
-/* Expired state */
 
-.expired {
-  color: #f4efe4;
+/* ============================================================
+   7. MEMBERS PORTAL
+   ============================================================ */
 
-  font-size: clamp(18px, 6vw, 28px);
-
-  letter-spacing: 0.12em;
-
-  text-transform: uppercase;
-}
-
-/* Request Access button */
-
-.access-button {
-  position: absolute;
-
-  left: 50%;
-  bottom: 10%;
-
-  transform: translateX(-50%);
-
-  display: inline-block;
-
-  padding: 12px 22px;
-
-  color: #f4efe4;
-
-  text-decoration: none;
-
-  text-align: center;
-
-  text-transform: uppercase;
-
-  font-size: clamp(9px, 2.2vw, 11px);
-
-  letter-spacing: clamp(0.16em, 0.7vw, 0.28em);
-
-  border: 1px solid rgba(200, 162, 93, 0.72);
-
-  background: rgba(31, 58, 45, 0.48);
-
-  transition: all 0.25s ease;
-}
-
-/* Hover */
-
-.access-button:hover {
-  background: rgba(200, 162, 93, 0.22);
-
-  border-color: rgba(244, 239, 228, 0.85);
-}
-/* =========================
-   MEMBERS PORTAL
-========================= */
-
-.members-body {
-  margin: 0;
-
+/* Members page gets its own background — applied via <body class="members"> */
+body.members {
   background:
     radial-gradient(
       circle at top,
@@ -196,84 +321,35 @@ body {
     ),
     linear-gradient(
       135deg,
-      rgba(17,24,39,0.82),
-      rgba(30,41,59,0.72) 55%,
-      rgba(15,23,42,0.86)
+      rgba(17, 24, 39, 0.82),
+      rgba(30, 41, 59, 0.72) 55%,
+      rgba(15, 23, 42, 0.86)
     );
-
-  color: #f8f4ec;
-  font-family: Georgia, serif;
   min-height: 100vh;
 }
 
-.members-page {
-  width: min(1200px, 92vw);
-  margin: 0 auto;
-  padding: 42px 0 80px;
-}
-
+/* Page header row */
 .members-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 20px;
-  margin-bottom: 34px;
-  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
 }
 
-.members-eyebrow {
-  margin: 0 0 10px;
-  color: #cbb89d;
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
+/* Glass card — reusable across both pages */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--card-pad-md);
+  backdrop-filter: var(--blur-heavy);
 }
 
-.members-title {
-  margin: 0;
-  color: #f8f4ec;
-  font-size: clamp(34px, 6vw, 62px);
-  font-weight: 400;
-  line-height: 1;
+/* Section header row inside a card */
+.card-header {
+  margin-bottom: var(--space-md);
 }
 
-.members-round {
-  color: #cbb89d;
-  font-size: 12px;
-  letter-spacing: 0.20em;
-  text-transform: uppercase;
-}
 
-.dashboard-card {
-  background: rgba(30, 41, 59, 0.82);
-  border: 1px solid rgba(203, 184, 157, 0.16);
-  padding: 28px;
-  backdrop-filter: blur(10px);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.section-header h2 {
-  margin: 0;
-  color: #f8f4ec;
-  font-size: 24px;
-  font-weight: 400;
-}
-
-.section-link {
-  color: #cbb89d;
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
+/* ============================================================
+   8. TABLE
+   ============================================================ */
 
 .table-wrap {
   overflow-x: auto;
@@ -286,41 +362,47 @@ table {
 }
 
 thead tr {
-  border-bottom: 1px solid rgba(203, 184, 157, 0.22);
+  border-bottom: 1px solid var(--color-border-strong);
 }
 
 th {
-  padding: 14px 12px;
+  padding: var(--space-sm) 12px;
   text-align: left;
-  color: #cbb89d;
+  color: var(--color-text-secondary);
   font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
 }
 
 td {
   padding: 16px 12px;
-  color: #f8f4ec;
-  border-bottom: 1px solid rgba(248, 244, 236, 0.07);
-  font-size: 15px;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--text-body);
 }
 
 tbody tr:hover {
-  background: rgba(148, 163, 184, 0.08);
+  background: var(--color-surface-hover);
 }
 
+
+/* ============================================================
+   9. RESPONSIVE
+   ============================================================ */
+
 @media (max-width: 768px) {
-  .members-page {
+
+  .page-wrap {
     width: 94vw;
-    padding-top: 28px;
+    padding-top: var(--space-md);
   }
 
-  .dashboard-card {
-    padding: 18px;
+  .card {
+    padding: var(--card-pad-sm);
   }
 
-  .members-title {
+  .page-title {
     font-size: 42px;
   }
 }
