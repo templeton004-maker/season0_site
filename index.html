@@ -1,271 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Season 0</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=37" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ── Grain overlay ── */
+    :root {
+      --ink:         #080e0b;
+      --gold:        #c9a84c;
+      --gold-border: rgba(201, 168, 76, 0.24);
+      --gold-dim:    rgba(201, 168, 76, 0.10);
+      --cream:       #f0ebe0;
+      --cream-dim:   rgba(240, 235, 224, 0.45);
+      --cream-faint: rgba(240, 235, 224, 0.07);
+      --green-glow:  rgba(18, 42, 26, 0.70);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Libre Baskerville', Georgia, serif;
+      --ease:         cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--cream);
+    }
+
     body::after {
       content: '';
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 100;
-      opacity: 0.032;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
+      opacity: 0.030;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
     }
 
-    /* ── Entrance animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse 75% 55% at 50% 38%, var(--green-glow) 0%, transparent 70%);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+    .rule-top {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 10;
     }
 
-    @keyframes scaleIn {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
-      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
-
-    /* ── Hero ── */
-    .hero {
+    .page {
       position: relative;
-      width: 100vw;
+      z-index: 1;
       min-height: 100dvh;
-      background-image:
-        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.60)),
-        url("./assets/images/hero-bg.png?v=2");
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      animation: fadeIn 1.2s ease both;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(60px, 10vw, 100px) clamp(20px, 6vw, 60px) clamp(40px, 6vw, 80px);
+      gap: clamp(36px, 6vw, 64px);
     }
 
-    /* ── Countdown card ── */
-    .countdown-card {
-      position: absolute;
-      top: 38%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 92vw;
-      max-width: 860px;
-      padding: clamp(20px, 5vw, 40px) clamp(14px, 5vw, 48px);
+    .wordmark {
       text-align: center;
-      background: rgba(8, 14, 10, 0.52);
-      border: 1px solid rgba(200, 162, 93, 0.28);
-      backdrop-filter: blur(10px);
-      /* inner top highlight — frosted glass effect */
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.05),
-        0 24px 64px rgba(0,0,0,0.45);
-      animation: scaleIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease) 0.1s forwards;
     }
 
-    /* ── Eyebrow ── */
-    .eyebrow {
-      margin: 0 0 clamp(14px, 3vw, 24px);
-      color: var(--color-gold);
-      font-size: clamp(8px, 2vw, 11px);
-      letter-spacing: clamp(0.18em, 0.8vw, 0.36em);
+    .wordmark__eyebrow {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.42em;
       text-transform: uppercase;
-      font-family: Georgia, serif;
-      animation: fadeUp 0.7s ease 0.5s both;
+      color: var(--gold);
+      margin-bottom: clamp(10px, 2vw, 18px);
     }
 
-    /* ── Countdown row ── */
+    .wordmark__title {
+      font-family: var(--font-display);
+      font-size: clamp(80px, 20vw, 180px);
+      font-weight: 400;
+      line-height: 0.88;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      font-style: italic;
+    }
+
+    .countdown-wrap {
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease) 0.28s forwards;
+    }
+
+    .countdown-label {
+      font-size: 9px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: clamp(14px, 2.5vw, 22px);
+      display: block;
+    }
+
     .countdown {
       display: flex;
-      justify-content: center;
       align-items: flex-start;
-      gap: clamp(6px, 3vw, 40px);
-      white-space: nowrap;
+      justify-content: center;
+      gap: clamp(8px, 3vw, 32px);
     }
 
     .countdown__unit {
-      flex: 1 1 0;
+      text-align: center;
       min-width: 0;
-      animation: fadeUp 0.7s ease both;
     }
-
-    .countdown__unit:nth-child(1) { animation-delay: 0.55s; }
-    .countdown__unit:nth-child(2) { animation-delay: 0.65s; }
-    .countdown__unit:nth-child(3) { animation-delay: 0.75s; }
-    .countdown__unit:nth-child(4) { animation-delay: 0.85s; }
 
     .countdown__number {
       display: block;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      color: #f4efe4;
-      font-size: clamp(36px, 13vw, 112px);
-      font-weight: 300;
-      line-height: 0.9;
+      font-family: var(--font-display);
+      font-size: clamp(40px, 11vw, 96px);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--cream);
       letter-spacing: 0.02em;
-      /* subtle text shadow for depth */
-      text-shadow: 0 2px 24px rgba(0,0,0,0.5);
     }
 
     .countdown__label {
       display: block;
-      margin-top: clamp(8px, 2vw, 16px);
-      color: var(--color-gold);
-      font-size: clamp(6px, 1.6vw, 10px);
-      letter-spacing: clamp(0.10em, 0.6vw, 0.28em);
+      margin-top: 6px;
+      font-size: clamp(7px, 1.4vw, 9px);
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      opacity: 0.85;
+      color: var(--gold);
+      opacity: 0.7;
     }
 
-    /* Divider between units */
     .countdown__sep {
-      align-self: flex-start;
-      padding-top: clamp(4px, 1.5vw, 12px);
-      color: rgba(200,162,93,0.35);
-      font-size: clamp(24px, 8vw, 72px);
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 300;
-      line-height: 0.9;
+      font-family: var(--font-display);
+      font-size: clamp(28px, 7vw, 64px);
+      color: var(--gold-border);
+      line-height: 1.1;
       user-select: none;
+      padding-top: 2px;
     }
 
-    /* ── Expired state ── */
     .expired {
-      color: #f4efe4;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: clamp(22px, 6vw, 36px);
-      font-weight: 300;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+      font-family: var(--font-display);
+      font-size: clamp(18px, 5vw, 28px);
+      font-style: italic;
+      color: var(--cream);
+      letter-spacing: 0.10em;
     }
 
-    /* ── Access button ── */
-    .access-btn {
-      position: absolute;
-      left: 50%;
-      bottom: 9%;
-      transform: translateX(-50%);
-      display: inline-block;
-      padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 32px);
-      color: #f4efe4;
-      text-decoration: none;
-      text-align: center;
+    .standings {
+      width: 100%;
+      max-width: 320px;
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease) 0.44s forwards;
+    }
+
+    .standings__label {
+      font-size: 9px;
+      letter-spacing: 0.36em;
       text-transform: uppercase;
-      font-size: clamp(9px, 2vw, 11px);
-      letter-spacing: clamp(0.16em, 0.7vw, 0.30em);
-      font-family: Georgia, serif;
-      border: 1px solid rgba(200, 162, 93, 0.65);
-      background: rgba(31, 58, 45, 0.42);
-      backdrop-filter: blur(6px);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-      transition: background 0.3s ease, border-color 0.3s ease, letter-spacing 0.3s ease;
-      animation: fadeUp 0.7s ease 1.0s both;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: clamp(12px, 2vw, 18px);
+      display: block;
+    }
+
+    .standings__list {
+      list-style: none;
+      border-top: 1px solid var(--gold-border);
+    }
+
+    .standings__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--cream-faint);
+    }
+
+    .standings__item:last-child {
+      border-bottom: 1px solid var(--gold-border);
+    }
+
+    .standings__rank {
+      font-size: 10px;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      width: 20px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-style: italic;
+    }
+
+    .standings__initial {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.08em;
+      flex: 1;
+      padding: 0 12px;
+    }
+
+    .standings__delta {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      font-family: var(--font-display);
+    }
+
+    .standings__delta.pos { color: #7ecf9e; }
+    .standings__delta.neg { color: #d97b7b; }
+    .standings__delta.eve { color: var(--cream-dim); }
+
+    .standings__locked {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .cta-wrap {
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease) 0.58s forwards;
+    }
+
+    .cta {
+      display: inline-block;
+      padding: clamp(11px, 2vw, 14px) clamp(30px, 5vw, 50px);
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--cream);
+      border: 1px solid var(--gold-border);
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
       white-space: nowrap;
     }
 
-    .access-btn:hover {
-      background: rgba(200, 162, 93, 0.18);
-      border-color: rgba(244, 239, 228, 0.80);
-      letter-spacing: clamp(0.20em, 0.8vw, 0.36em);
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold-dim);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s var(--ease);
     }
 
-    /* ── Mobile tweaks ── */
-    @media (max-width: 480px) {
-      .countdown-card {
-        top: 40%;
-      }
-      .countdown__sep {
-        display: none;
-      }
+    .cta:hover::before { transform: scaleX(1); }
+    .cta:hover         { border-color: rgba(201,168,76,0.55); }
+    .cta span          { position: relative; z-index: 1; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 420px) {
+      .countdown__sep { display: none; }
+      .countdown { gap: clamp(14px, 5vw, 24px); }
     }
   </style>
-
 </head>
+
 <body>
+  <div class="rule-top"></div>
 
-  <main class="hero">
+  <main class="page">
 
-    <section class="countdown-card">
-      <p class="eyebrow">&nbsp;</p>
+    <div class="wordmark">
+      <span class="wordmark__eyebrow">Wolf Hammer</span>
+      <h1 class="wordmark__title">Season 0</h1>
+    </div>
 
+    <div class="countdown-wrap">
+      <span class="countdown-label" id="countdownLabel">Round 2 Begins</span>
       <div class="countdown" id="countdown">
         <div class="countdown__unit">
           <span class="countdown__number" id="days">00</span>
           <label class="countdown__label">Days</label>
         </div>
-
         <span class="countdown__sep">·</span>
-
         <div class="countdown__unit">
           <span class="countdown__number" id="hours">00</span>
           <label class="countdown__label">Hours</label>
         </div>
-
         <span class="countdown__sep">·</span>
-
         <div class="countdown__unit">
           <span class="countdown__number" id="minutes">00</span>
           <label class="countdown__label">Minutes</label>
         </div>
-
         <span class="countdown__sep">·</span>
-
         <div class="countdown__unit">
           <span class="countdown__number" id="seconds">00</span>
           <label class="countdown__label">Seconds</label>
         </div>
       </div>
-    </section>
+    </div>
 
-    <a class="access-btn" href="https://season0.pro/members/">
-      Request Access
-    </a>
+    <div class="standings">
+      <span class="standings__label">Current Standings</span>
+      <ul class="standings__list" id="standingsList"></ul>
+      <p class="standings__locked">Full stats · Members only</p>
+    </div>
+
+    <div class="cta-wrap">
+      <a class="cta" href="https://season0.pro/members/" id="ctaBtn">
+        <span>Enter Clubhouse</span>
+      </a>
+    </div>
 
   </main>
 
   <script>
-    const targetDate = new Date("2026-05-21T17:40:00-05:00").getTime();
+    const r2Date = new Date("2026-06-08T08:00:00-05:00").getTime();
+
+    const standings = [
+      { initial: "K", rank: 1, trend: "pos" },
+      { initial: "M", rank: 2, trend: "pos" },
+      { initial: "W", rank: 3, trend: "eve" },
+      { initial: "J", rank: 4, trend: "neg" },
+    ];
+
+    document.getElementById("standingsList").innerHTML =
+      standings.map(p => `
+        <li class="standings__item">
+          <span class="standings__rank">${p.rank}</span>
+          <span class="standings__initial">${p.initial}</span>
+          <span class="standings__delta ${p.trend}">
+            ${p.trend === "pos" ? "▲" : p.trend === "neg" ? "▼" : "—"}
+          </span>
+        </li>
+      `).join("");
 
     function updateCountdown() {
-      const now      = new Date().getTime();
-      const distance = targetDate - now;
-
+      const distance = r2Date - Date.now();
       if (distance <= 0) {
-        document.getElementById("countdown").innerHTML =
-          "<p class='expired'>Season 0 Has Begun</p>";
+        document.getElementById("countdown").innerHTML = "<p class='expired'>Round 2 Underway</p>";
+        document.getElementById("countdownLabel").style.display = "none";
         return;
       }
-
-      const days    = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours   = Math.floor((distance / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((distance / (1000 * 60)) % 60);
-      const seconds = Math.floor((distance / 1000) % 60);
-
-      document.getElementById("days").textContent    = String(days).padStart(2, "0");
-      document.getElementById("hours").textContent   = String(hours).padStart(2, "0");
-      document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
-      document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+      const d = Math.floor(distance / 86400000);
+      const h = Math.floor((distance / 3600000) % 24);
+      const m = Math.floor((distance / 60000) % 60);
+      const s = Math.floor((distance / 1000) % 60);
+      document.getElementById("days").textContent    = String(d).padStart(2,"0");
+      document.getElementById("hours").textContent   = String(h).padStart(2,"0");
+      document.getElementById("minutes").textContent = String(m).padStart(2,"0");
+      document.getElementById("seconds").textContent = String(s).padStart(2,"0");
     }
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    /* Cloudflare Access check */
-    const accessBtn = document.querySelector(".access-btn");
+    const ctaBtn = document.getElementById("ctaBtn");
     if (document.cookie.includes("CF_Authorization")) {
-      accessBtn.textContent = "Return to Clubhouse";
-    } else {
-      accessBtn.textContent = "Request Access";
+      ctaBtn.querySelector("span").textContent = "Return to Clubhouse";
     }
   </script>
 
