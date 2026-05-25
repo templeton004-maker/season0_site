@@ -1,1 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Season 0 — Round 2</title>
 
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://season0.pro/r2/">
+  <meta property="og:title"       content="Season 0 · Round 2">
+  <meta property="og:description" content="May 31 · 7:32 AM · Fields Ranch West, Frisco TX. Wolf Hammer. Every hole has money on it.">
+  <meta property="og:image"       content="https://season0.pro/assets/images/og-r2.png">
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Season 0 · Round 2">
+  <meta name="twitter:description" content="May 31 · 7:32 AM · Fields Ranch West, Frisco TX.">
+  <meta name="twitter:image"       content="https://season0.pro/assets/images/og-r2.png">
+  <meta name="theme-color" content="#080e0b">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:         #080e0b;
+      --gold:        #c9a84c;
+      --gold-border: rgba(201, 168, 76, 0.24);
+      --gold-dim:    rgba(201, 168, 76, 0.10);
+      --cream:       #f0ebe0;
+      --cream-dim:   rgba(240, 235, 224, 0.50);
+      --green-glow:  rgba(18, 42, 26, 0.70);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Libre Baskerville', Georgia, serif;
+      --ease:         cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--cream);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse 75% 55% at 50% 40%, var(--green-glow) 0%, transparent 70%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.030;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    .rule-top {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 10;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: min(480px, 92vw);
+      border: 1px solid var(--gold-border);
+      background: rgba(8, 16, 12, 0.85);
+      backdrop-filter: blur(14px);
+      padding: clamp(32px, 6vw, 52px) clamp(28px, 6vw, 48px);
+      text-align: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 24px 64px rgba(0,0,0,0.5);
+      animation: fadeUp 0.9s var(--ease) 0.1s both;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 32px; height: 32px;
+      border-top: 1px solid rgba(201,168,76,0.45);
+      border-left: 1px solid rgba(201,168,76,0.45);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 32px; height: 32px;
+      border-bottom: 1px solid rgba(201,168,76,0.45);
+      border-right: 1px solid rgba(201,168,76,0.45);
+    }
+
+    .kicker {
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .kicker::before, .kicker::after {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.45;
+    }
+
+    .round-title {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 14vw, 88px);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 0.9;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      margin-bottom: clamp(24px, 4vw, 36px);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: clamp(24px, 4vw, 36px);
+    }
+
+    .divider__line {
+      width: clamp(30px, 8vw, 60px);
+      height: 1px;
+      background: var(--gold-border);
+    }
+
+    .divider__dot {
+      width: 4px; height: 4px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      opacity: 0.6;
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: clamp(28px, 5vw, 40px);
+    }
+
+    .detail { display: flex; flex-direction: column; gap: 3px; }
+
+    .detail__label {
+      font-size: 8px;
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
+    .detail__value {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 4vw, 22px);
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.02em;
+    }
+
+    .detail__value span { color: var(--cream-dim); font-size: 0.8em; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--gold-border);
+      background: var(--gold-dim);
+      margin-bottom: clamp(28px, 5vw, 40px);
+    }
+
+    .status__dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    .status__text {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .cta {
+      display: inline-block;
+      padding: 12px clamp(28px, 5vw, 44px);
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--cream);
+      border: 1px solid var(--gold-border);
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gold-dim);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .cta:hover::before { transform: scaleX(1); }
+    .cta:hover         { border-color: rgba(201,168,76,0.55); }
+    .cta span          { position: relative; z-index: 1; }
+
+    .countdown-wrap { margin-top: clamp(20px, 4vw, 32px); }
+
+    .countdown-micro-label {
+      font-size: 8px;
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .countdown-micro {
+      display: flex;
+      justify-content: center;
+      gap: clamp(6px, 2vw, 16px);
+    }
+
+    .cm-unit { text-align: center; }
+
+    .cm-number {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(22px, 5vw, 32px);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--cream);
+    }
+
+    .cm-label {
+      display: block;
+      font-size: 7px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    .cm-sep {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 4vw, 24px);
+      color: var(--gold-border);
+      line-height: 1.2;
+      align-self: flex-start;
+      padding-top: 2px;
+    }
+
+    .page-footer {
+      position: relative;
+      z-index: 1;
+      margin-top: 28px;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.35);
+      animation: fadeUp 0.9s var(--ease) 0.4s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 420px) { .cm-sep { display: none; } }
+  </style>
+</head>
+
+<body>
+  <div class="rule-top"></div>
+
+  <div class="card">
+    <div class="kicker">Wolf Hammer</div>
+    <h1 class="round-title">Round 2</h1>
+
+    <div class="divider">
+      <span class="divider__line"></span>
+      <span class="divider__dot"></span>
+      <span class="divider__dot"></span>
+      <span class="divider__dot"></span>
+      <span class="divider__line"></span>
+    </div>
+
+    <div class="details">
+      <div class="detail">
+        <span class="detail__label">Date</span>
+        <span class="detail__value">May 31, 2026</span>
+      </div>
+      <div class="detail">
+        <span class="detail__label">Tee Time</span>
+        <span class="detail__value">7:32 AM</span>
+      </div>
+      <div class="detail">
+        <span class="detail__label">Course</span>
+        <span class="detail__value">Fields Ranch West <span>· Frisco, TX</span></span>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="status__dot"></span>
+      <span class="status__text">Season Underway · R1 Complete</span>
+    </div>
+
+    <a class="cta" href="https://season0.pro/members/">
+      <span>View Standings</span>
+    </a>
+
+    <div class="countdown-wrap">
+      <span class="countdown-micro-label">Tee off in</span>
+      <div class="countdown-micro" id="countdown">
+        <div class="cm-unit">
+          <span class="cm-number" id="days">00</span>
+          <span class="cm-label">Days</span>
+        </div>
+        <span class="cm-sep">·</span>
+        <div class="cm-unit">
+          <span class="cm-number" id="hours">00</span>
+          <span class="cm-label">Hours</span>
+        </div>
+        <span class="cm-sep">·</span>
+        <div class="cm-unit">
+          <span class="cm-number" id="minutes">00</span>
+          <span class="cm-label">Min</span>
+        </div>
+        <span class="cm-sep">·</span>
+        <div class="cm-unit">
+          <span class="cm-number" id="seconds">00</span>
+          <span class="cm-label">Sec</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="page-footer">season0.pro</p>
+
+  <script>
+    const teeTime = new Date("2026-05-31T07:32:00-05:00").getTime();
+
+    function tick() {
+      const dist = teeTime - Date.now();
+      if (dist <= 0) {
+        document.getElementById("countdown").innerHTML =
+          "<p style='font-family:var(--font-display);font-style:italic;color:var(--cream);font-size:18px;letter-spacing:0.08em;'>Tee time is now</p>";
+        return;
+      }
+      const d = Math.floor(dist / 86400000);
+      const h = Math.floor((dist / 3600000) % 24);
+      const m = Math.floor((dist / 60000) % 60);
+      const s = Math.floor((dist / 1000) % 60);
+      document.getElementById("days").textContent    = String(d).padStart(2,"0");
+      document.getElementById("hours").textContent   = String(h).padStart(2,"0");
+      document.getElementById("minutes").textContent = String(m).padStart(2,"0");
+      document.getElementById("seconds").textContent = String(s).padStart(2,"0");
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
