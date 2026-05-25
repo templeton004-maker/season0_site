@@ -7,45 +7,75 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css?v=37" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    /* ── Tokens ── */
     :root {
-      --font-display: 'Cormorant Garamond', Georgia, serif;
-      --members-bg-top:    #07101c;
-      --members-bg-bottom: #040c16;
-      --members-surface:   rgba(8, 14, 26, 0.88);
-      --members-border:    rgba(200, 162, 93, 0.16);
-      --members-border-th: rgba(200, 162, 93, 0.26);
-      --members-rule:      rgba(200, 162, 93, 0.08);
-      --pos-color: #7ecf9e;
-      --neg-color: #d97b7b;
-      --neu-color: #f4efe4;
+      --ink:            #080e0b;
+      --surface:        rgba(8, 16, 12, 0.88);
+      --gold:           #c9a84c;
+      --gold-border:    rgba(201, 168, 76, 0.24);
+      --gold-border-th: rgba(201, 168, 76, 0.32);
+      --gold-dim:       rgba(201, 168, 76, 0.08);
+      --gold-rule:      rgba(201, 168, 76, 0.10);
+      --cream:          #f0ebe0;
+      --cream-dim:      rgba(240, 235, 224, 0.50);
+      --cream-faint:    rgba(240, 235, 224, 0.07);
+      --green-glow:     rgba(18, 42, 26, 0.65);
+      --pos:            #7ecf9e;
+      --neg:            #d97b7b;
+      --font-display:   'Playfair Display', Georgia, serif;
+      --font-body:      'Libre Baskerville', Georgia, serif;
+      --ease:           cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ── Grain ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    /* ── Base ── */
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--cream);
+      min-height: 100vh;
+    }
+
+    /* Green glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, var(--green-glow) 0%, transparent 65%);
+    }
+
+    /* Grain */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 100;
-      opacity: 0.028;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
+      opacity: 0.030;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
     }
 
-    /* ── Entrance animations ── */
+    /* Gold top rule */
+    .rule-top {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 10;
+    }
+
+    /* ── Animations ── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
     }
 
     .reveal {
@@ -58,160 +88,146 @@
       transform: translateY(0);
     }
 
-    /* ── Base ── */
-    body.members {
-      margin: 0;
-      background:
-        radial-gradient(ellipse 90% 45% at 50% 0%, rgba(200,162,93,0.07) 0%, transparent 55%),
-        linear-gradient(170deg, var(--members-bg-top) 0%, var(--members-bg-bottom) 100%);
-      min-height: 100vh;
-      font-family: Georgia, serif;
-      color: #f4efe4;
-      overflow-x: hidden;
-    }
-
     /* ── Page wrap ── */
-    .members-wrap {
+    .wrap {
+      position: relative;
+      z-index: 1;
       width: min(1100px, 92vw);
       margin: 0 auto;
-      padding: 56px 0 90px;
+      padding: 64px 0 90px;
     }
 
     /* ── Header ── */
-    .members-header {
+    .header {
       text-align: center;
       margin-bottom: 48px;
-      animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+      animation: fadeUp 0.8s var(--ease) 0.1s both;
     }
 
-    .members-header::after {
+    .header::after {
       content: '';
       display: block;
-      width: 40px;
+      width: 36px;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(200,162,93,0.7), transparent);
-      margin: 24px auto 0;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 22px auto 0;
     }
 
-    .members-kicker {
-      display: inline-block;
-      color: rgba(200,162,93,0.9);
-      font-size: 10px;
-      letter-spacing: 0.40em;
+    .header__kicker {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.42em;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      color: var(--gold);
+      margin-bottom: 12px;
     }
 
-    .members-h1 {
+    .header__title {
       font-family: var(--font-display);
       font-size: clamp(52px, 9vw, 96px);
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      color: #f4efe4;
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: -0.01em;
+      color: var(--cream);
       margin: 0 0 8px;
-      line-height: 1;
-      text-shadow: 0 2px 32px rgba(0,0,0,0.4);
+      line-height: 0.92;
     }
 
-    .members-sub {
-      color: rgba(200,162,93,0.7);
-      font-size: 11px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-    }
-
-    /* ── Season totals ── */
-    .season-totals {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: rgba(200,162,93,0.10);
-      border: 1px solid rgba(200,162,93,0.14);
-      margin-bottom: 32px;
-      animation: fadeUp 0.8s ease 0.25s both;
-    }
-
-    .season-stat {
-      background: rgba(7,13,24,0.90);
-      padding: clamp(16px, 3vw, 28px) clamp(12px, 2vw, 20px);
-      text-align: center;
-      transition: background 0.25s ease;
-    }
-
-    .season-stat:hover {
-      background: rgba(200,162,93,0.05);
-    }
-
-    .season-stat__value {
-      display: block;
-      font-family: var(--font-display);
-      font-size: clamp(32px, 5vw, 52px);
-      font-weight: 300;
-      line-height: 1;
-      color: #f4efe4;
-      transition: transform 0.2s ease;
-    }
-
-    .season-stat:hover .season-stat__value {
-      transform: scale(1.04);
-    }
-
-    .season-stat__value.positive { color: var(--pos-color); }
-    .season-stat__value.negative { color: var(--neg-color); }
-
-    .season-stat__label {
-      display: block;
-      margin-top: 8px;
-      color: rgba(200,162,93,0.65);
+    .header__sub {
+      font-family: var(--font-body);
       font-size: 9px;
       letter-spacing: 0.28em;
       text-transform: uppercase;
+      color: var(--cream-dim);
     }
 
-    /* ── Glass card ── */
-    .members-card {
-      background: var(--members-surface);
-      border: 1px solid var(--members-border);
-      padding: clamp(20px, 4vw, 36px);
-      margin-bottom: 20px;
+    /* ── Season totals grid ── */
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--gold-border);
+      border: 1px solid var(--gold-border);
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s var(--ease) 0.22s both;
+    }
+
+    .total-stat {
+      background: var(--ink);
+      padding: clamp(16px, 3vw, 28px) clamp(10px, 2vw, 20px);
+      text-align: center;
+      transition: background 0.25s ease;
+      cursor: default;
+    }
+
+    .total-stat:hover { background: rgba(201,168,76,0.05); }
+
+    .total-stat__value {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(30px, 5vw, 50px);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--cream);
+      transition: transform 0.2s ease;
+    }
+
+    .total-stat:hover .total-stat__value { transform: scale(1.04); }
+
+    .total-stat__value.pos { color: var(--pos); }
+    .total-stat__value.neg { color: var(--neg); }
+
+    .total-stat__label {
+      display: block;
+      margin-top: 8px;
+      font-family: var(--font-body);
+      font-size: 8px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.60);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      padding: clamp(20px, 4vw, 34px);
+      margin-bottom: 18px;
       backdrop-filter: blur(14px);
       position: relative;
       overflow: hidden;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.04),
-        0 16px 48px rgba(0,0,0,0.35);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 16px 48px rgba(0,0,0,0.4);
     }
 
-    /* Corner brackets */
-    .members-card::before,
-    .members-card::after {
+    .card::before {
       content: '';
       position: absolute;
-      width: 36px;
-      height: 36px;
-    }
-    .members-card::before {
       top: 0; left: 0;
-      border-top: 1px solid rgba(200,162,93,0.45);
-      border-left: 1px solid rgba(200,162,93,0.45);
-    }
-    .members-card::after {
-      bottom: 0; right: 0;
-      border-bottom: 1px solid rgba(200,162,93,0.45);
-      border-right: 1px solid rgba(200,162,93,0.45);
+      width: 32px; height: 32px;
+      border-top: 1px solid rgba(201,168,76,0.40);
+      border-left: 1px solid rgba(201,168,76,0.40);
     }
 
-    /* ── Section label ── */
-    .section-label {
-      color: rgba(200,162,93,0.85);
-      font-size: 10px;
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 32px; height: 32px;
+      border-bottom: 1px solid rgba(201,168,76,0.40);
+      border-right: 1px solid rgba(201,168,76,0.40);
+    }
+
+    .card__label {
+      font-family: var(--font-body);
+      font-size: 9px;
       letter-spacing: 0.34em;
       text-transform: uppercase;
-      margin: 0 0 20px;
+      color: var(--gold);
+      margin: 0 0 18px;
     }
 
-    /* ── Chart ── */
-    canvas { max-height: 280px; }
+    canvas { max-height: 270px; }
 
     /* ── Table ── */
     .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -219,18 +235,19 @@
     .scores-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 680px;
+      min-width: 660px;
+      font-family: var(--font-body);
     }
 
     .scores-table thead tr {
-      border-bottom: 1px solid var(--members-border-th);
+      border-bottom: 1px solid var(--gold-border-th);
     }
 
     .scores-table th {
-      padding: 11px 12px;
+      padding: 10px 12px;
       text-align: left;
-      color: rgba(200,162,93,0.85);
-      font-size: 9px;
+      color: var(--gold);
+      font-size: 8px;
       font-weight: 400;
       letter-spacing: 0.26em;
       text-transform: uppercase;
@@ -239,105 +256,95 @@
 
     .scores-table td {
       padding: 14px 12px;
-      color: #f4efe4;
-      font-size: 14px;
-      border-bottom: 1px solid var(--members-rule);
+      color: var(--cream);
+      font-size: 13px;
+      border-bottom: 1px solid var(--gold-rule);
       white-space: nowrap;
     }
 
     .scores-table tbody tr:last-child td { border-bottom: none; }
+    .scores-table tbody tr { transition: background 0.2s ease; }
+    .scores-table tbody tr:hover { background: rgba(201,168,76,0.04); }
 
-    .scores-table tbody tr {
-      transition: background 0.2s ease;
-    }
-
-    .scores-table tbody tr:hover {
-      background: rgba(200,162,93,0.04);
-    }
-
-    /* Rank badge */
+    /* Rank */
     .rank {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
-      font-size: 11px;
-      color: rgba(200,162,93,0.7);
-      border: 1px solid rgba(200,162,93,0.20);
-      margin-right: 10px;
+      width: 20px; height: 20px;
       font-family: var(--font-display);
+      font-style: italic;
+      font-size: 11px;
+      color: rgba(201,168,76,0.60);
+      border: 1px solid rgba(201,168,76,0.18);
+      margin-right: 10px;
     }
 
     .rank-1 {
-      color: #c8a25d;
-      border-color: rgba(200,162,93,0.55);
-      background: rgba(200,162,93,0.08);
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.50);
+      background: rgba(201,168,76,0.08);
     }
 
     .player-name {
       font-family: var(--font-display);
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 400;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
     }
 
     .player-id {
       margin-left: 6px;
-      color: rgba(200,162,93,0.55);
-      font-size: 10px;
-      letter-spacing: 0.12em;
+      color: rgba(201,168,76,0.50);
+      font-size: 9px;
+      letter-spacing: 0.14em;
     }
 
-    .money-positive { color: var(--pos-color); }
-    .money-negative { color: var(--neg-color); }
-    .money-even     { color: var(--neu-color); }
+    .money-pos { color: var(--pos); }
+    .money-neg { color: var(--neg); }
+    .money-eve { color: var(--cream); }
 
     /* ── Footer note ── */
-    .members-note {
+    .page-note {
       text-align: center;
-      margin-top: 24px;
-      color: rgba(200,162,93,0.40);
-      font-size: 10px;
-      letter-spacing: 0.18em;
+      margin-top: 20px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.20em;
       text-transform: uppercase;
+      color: rgba(201,168,76,0.35);
     }
 
     /* ── Mobile ── */
     @media (max-width: 600px) {
-      .members-wrap    { padding: 28px 0 60px; }
-      .members-h1      { font-size: 56px; }
-      .season-totals   { grid-template-columns: repeat(2, 1fr); }
-      .members-card    { padding: 18px 14px; }
-    }
-
-    @media (max-width: 360px) {
-      .season-totals { grid-template-columns: repeat(2, 1fr); }
+      .wrap          { padding: 32px 0 60px; }
+      .header__title { font-size: 56px; }
+      .totals        { grid-template-columns: repeat(2, 1fr); }
+      .card          { padding: 18px 14px; }
     }
   </style>
 </head>
 
-<body class="members">
-  <main class="members-wrap">
+<body>
+  <div class="rule-top"></div>
 
-    <header class="members-header">
-      <div class="members-kicker">Season 0</div>
-      <h1 class="members-h1">Round 1</h1>
-      <div class="members-sub">Clubhouse Standings</div>
+  <main class="wrap">
+
+    <header class="header">
+      <span class="header__kicker">Season 0</span>
+      <h1 class="header__title">Round 1</h1>
+      <span class="header__sub">Clubhouse Standings</span>
     </header>
 
-    <!-- Season totals bar -->
-    <div class="season-totals" id="seasonTotals"></div>
+    <div class="totals" id="seasonTotals"></div>
 
-    <!-- Chart card -->
-    <section class="members-card reveal">
-      <p class="section-label">Round $</p>
+    <section class="card reveal">
+      <p class="card__label">Round $</p>
       <canvas id="roundChart"></canvas>
     </section>
 
-    <!-- Scorecard -->
-    <section class="members-card reveal">
-      <p class="section-label">Full Scorecard</p>
+    <section class="card reveal">
+      <p class="card__label">Full Scorecard</p>
       <div class="table-wrap">
         <table class="scores-table">
           <thead>
@@ -359,69 +366,56 @@
       </div>
     </section>
 
-    <p class="members-note">Ranked by Round $</p>
+    <p class="page-note">Ranked by Round $</p>
 
   </main>
 
   <script>
-    /* ── Data ── */
     const r1Data = [
-      { playerId: "KS", player: "Kyle Story",       roundMoney: 160,  total: 75, net: 75, holeWins: 8,  holeLosses: 6, holeHalves: 4, birdies: 3, wolfWins: 4, wolfLosses: 0 },
-      { playerId: "MJ", player: "Michael Jones",    roundMoney: 20,  total: 97, net: 79, holeWins: 10, holeLosses: 4, holeHalves: 4, birdies: 0, wolfWins: 2, wolfLosses: 1 },
-      { playerId: "WT", player: "William Templeton",roundMoney: 0,  total: 85, net: 81, holeWins: 5,  holeLosses: 9, holeHalves: 4, birdies: 0, wolfWins: 3, wolfLosses: 2 },
-      { playerId: "JT", player: "John Templeton",   roundMoney: -180, total: 80, net: 80, holeWins: 5,  holeLosses: 9, holeHalves: 4, birdies: 1, wolfWins: 0, wolfLosses: 3 }
+      { playerId: "KS", player: "Kyle Story",        roundMoney: 160,  total: 75, net: 75, holeWins: 8,  holeLosses: 6, holeHalves: 4, birdies: 3, wolfWins: 4, wolfLosses: 0 },
+      { playerId: "MJ", player: "Michael Jones",     roundMoney: 20,   total: 97, net: 79, holeWins: 10, holeLosses: 4, holeHalves: 4, birdies: 0, wolfWins: 2, wolfLosses: 1 },
+      { playerId: "WT", player: "William Templeton", roundMoney: 0,    total: 85, net: 81, holeWins: 5,  holeLosses: 9, holeHalves: 4, birdies: 0, wolfWins: 3, wolfLosses: 2 },
+      { playerId: "JT", player: "John Templeton",    roundMoney: -180, total: 80, net: 80, holeWins: 5,  holeLosses: 9, holeHalves: 4, birdies: 1, wolfWins: 0, wolfLosses: 3 }
     ];
 
     const ordered = [...r1Data].sort((a, b) => b.roundMoney - a.roundMoney);
 
-    /* ── Helpers ── */
-    function moneyClass(v) {
-      return v > 0 ? "money-positive" : v < 0 ? "money-negative" : "money-even";
-    }
+    function moneyClass(v) { return v > 0 ? "money-pos" : v < 0 ? "money-neg" : "money-eve"; }
+    function moneyText(v)  { return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0"; }
 
-    function moneyText(v) {
-      return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0";
-    }
-
-    /* ── Count-up animation ── */
+    /* Count-up */
     function countUp(el, target, duration) {
-      const start     = performance.now();
-      const isNeg     = target < 0;
-      const absTarget = Math.abs(target);
-
+      const start = performance.now();
+      const isNeg = target < 0;
+      const abs   = Math.abs(target);
       function step(now) {
-        const progress = Math.min((now - start) / duration, 1);
-        const ease     = 1 - Math.pow(1 - progress, 3); // ease out cubic
-        const current  = Math.round(ease * absTarget);
-        const prefix   = isNeg ? "-$" : (target > 0 ? "+$" : "$");
-        el.textContent = prefix + current;
-        if (progress < 1) requestAnimationFrame(step);
+        const p   = Math.min((now - start) / duration, 1);
+        const e   = 1 - Math.pow(1 - p, 3);
+        const cur = Math.round(e * abs);
+        el.textContent = (isNeg ? "-$" : target > 0 ? "+$" : "$") + cur;
+        if (p < 1) requestAnimationFrame(step);
       }
-
       requestAnimationFrame(step);
     }
 
-    /* ── Season totals ── */
-    function buildSeasonTotals() {
+    /* Season totals */
+    function buildTotals() {
       document.getElementById("seasonTotals").innerHTML = ordered.map(p => `
-        <div class="season-stat">
-          <span class="season-stat__value ${p.roundMoney > 0 ? 'positive' : p.roundMoney < 0 ? 'negative' : ''}"
+        <div class="total-stat">
+          <span class="total-stat__value ${p.roundMoney > 0 ? 'pos' : p.roundMoney < 0 ? 'neg' : ''}"
                 data-target="${p.roundMoney}">$0</span>
-          <span class="season-stat__label">${p.player.split(' ')[0]}</span>
+          <span class="total-stat__label">${p.player.split(' ')[0]}</span>
         </div>
       `).join("");
 
-      // Trigger count-up after a short delay
       setTimeout(() => {
-        document.querySelectorAll(".season-stat__value[data-target]").forEach((el, i) => {
-          setTimeout(() => {
-            countUp(el, parseInt(el.dataset.target), 900);
-          }, i * 80);
+        document.querySelectorAll(".total-stat__value[data-target]").forEach((el, i) => {
+          setTimeout(() => countUp(el, parseInt(el.dataset.target), 900), i * 80);
         });
       }, 400);
     }
 
-    /* ── Table ── */
+    /* Table */
     document.getElementById("roundTable").innerHTML = ordered.map((p, i) => `
       <tr>
         <td>
@@ -441,7 +435,7 @@
       </tr>
     `).join("");
 
-    /* ── Chart ── */
+    /* Chart */
     new Chart(document.getElementById("roundChart"), {
       type: "bar",
       data: {
@@ -449,12 +443,8 @@
         datasets: [{
           label: "Round $",
           data: ordered.map(p => p.roundMoney),
-          backgroundColor: ordered.map(p =>
-            p.roundMoney >= 0 ? "rgba(200,162,93,0.22)" : "rgba(217,123,123,0.22)"
-          ),
-          borderColor: ordered.map(p =>
-            p.roundMoney >= 0 ? "rgba(200,162,93,0.90)" : "rgba(217,123,123,0.90)"
-          ),
+          backgroundColor: ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
+          borderColor:     ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
           borderWidth: 1,
           borderRadius: 2
         }]
@@ -465,35 +455,31 @@
         plugins: { legend: { display: false } },
         scales: {
           x: {
-            ticks: { color: "rgba(244,239,228,0.55)", font: { family: "Georgia, serif", size: 12 } },
-            grid:  { color: "rgba(200,162,93,0.05)" }
+            ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 11 } },
+            grid:  { color: "rgba(201,168,76,0.05)" }
           },
           y: {
             ticks: {
-              color: "rgba(244,239,228,0.55)",
-              font: { family: "Georgia, serif", size: 11 },
+              color: "rgba(240,235,224,0.50)",
+              font:  { family: "'Libre Baskerville', Georgia, serif", size: 10 },
               callback: v => (v >= 0 ? "+$" : "-$") + Math.abs(v)
             },
-            grid: { color: "rgba(200,162,93,0.05)" }
+            grid: { color: "rgba(201,168,76,0.05)" }
           }
         }
       }
     });
 
-    /* ── Scroll reveal ── */
-    const observer = new IntersectionObserver((entries) => {
+    /* Scroll reveal */
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
       });
     }, { threshold: 0.08 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    /* ── Init ── */
-    buildSeasonTotals();
+    buildTotals();
   </script>
 </body>
 </html>
