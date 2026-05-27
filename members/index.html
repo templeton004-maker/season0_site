@@ -12,22 +12,19 @@
 
   <style>
     :root {
-      --ink:            #080e0b;
-      --surface:        rgba(8, 16, 12, 0.88);
-      --gold:           #c9a84c;
-      --gold-border:    rgba(201, 168, 76, 0.24);
-      --gold-border-th: rgba(201, 168, 76, 0.32);
-      --gold-dim:       rgba(201, 168, 76, 0.08);
-      --gold-rule:      rgba(201, 168, 76, 0.10);
-      --cream:          #f0ebe0;
-      --cream-dim:      rgba(240, 235, 224, 0.50);
-      --cream-faint:    rgba(240, 235, 224, 0.07);
-      --green-glow:     rgba(18, 42, 26, 0.65);
-      --pos:            #7ecf9e;
-      --neg:            #d97b7b;
-      --font-display:   'Playfair Display', Georgia, serif;
-      --font-body:      'Libre Baskerville', Georgia, serif;
-      --ease:           cubic-bezier(0.22, 1, 0.36, 1);
+      --ink:         #080e0b;
+      --surface:     rgba(8,16,12,0.88);
+      --gold:        #c9a84c;
+      --gold-border: rgba(201,168,76,0.24);
+      --gold-rule:   rgba(201,168,76,0.10);
+      --cream:       #f0ebe0;
+      --cream-dim:   rgba(240,235,224,0.50);
+      --green-glow:  rgba(18,42,26,0.65);
+      --pos:         #7ecf9e;
+      --neg:         #d97b7b;
+      --font-display:'Playfair Display', Georgia, serif;
+      --font-body:   'Libre Baskerville', Georgia, serif;
+      --ease:        cubic-bezier(0.22,1,0.36,1);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -71,11 +68,9 @@
 
     .back {
       position: fixed;
-      top: 16px;
-      left: 20px;
+      top: 16px; left: 20px;
       z-index: 50;
       color: rgba(201,168,76,0.45);
-      font-family: var(--font-body);
       font-size: 20px;
       text-decoration: none;
       line-height: 1;
@@ -103,6 +98,7 @@
       padding: 64px 0 90px;
     }
 
+    /* ── Header ── */
     .header {
       text-align: center;
       margin-bottom: 48px;
@@ -120,7 +116,6 @@
 
     .header__kicker {
       display: block;
-      font-family: var(--font-body);
       font-size: 9px;
       letter-spacing: 0.42em;
       text-transform: uppercase;
@@ -140,75 +135,89 @@
     }
 
     .header__sub {
-      font-family: var(--font-body);
       font-size: 9px;
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--cream-dim);
     }
 
-    .totals {
+    /* ── Season standings bar ── */
+    .standings {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1px;
       background: var(--gold-border);
       border: 1px solid var(--gold-border);
       margin-bottom: 28px;
-      animation: fadeUp 0.8s var(--ease) 0.22s both;
+      animation: fadeUp 0.8s var(--ease) 0.18s both;
     }
 
-    .total-stat {
+    .standing-stat {
       background: var(--ink);
-      padding: clamp(16px, 3vw, 28px) clamp(10px, 2vw, 20px);
+      padding: clamp(16px,3vw,28px) clamp(10px,2vw,20px);
       text-align: center;
-      transition: background 0.25s ease;
-      cursor: pointer;
       text-decoration: none;
       display: block;
+      transition: background 0.25s ease;
     }
 
-    .total-stat:hover { background: rgba(201,168,76,0.08); }
+    .standing-stat:hover { background: rgba(201,168,76,0.08); }
 
-    .total-stat__value {
+    .standing-stat__rank {
       display: block;
       font-family: var(--font-display);
-      font-size: clamp(30px, 5vw, 50px);
+      font-style: italic;
+      font-size: 11px;
+      color: rgba(201,168,76,0.45);
+      margin-bottom: 4px;
+    }
+
+    .standing-stat__value {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(26px,4.5vw,44px);
       font-weight: 400;
       line-height: 1;
       color: var(--cream);
       transition: transform 0.2s ease;
     }
 
-    .total-stat:hover .total-stat__value { transform: scale(1.04); }
+    .standing-stat:hover .standing-stat__value { transform: scale(1.04); }
+    .standing-stat__value.pos { color: var(--pos); }
+    .standing-stat__value.neg { color: var(--neg); }
 
-    .total-stat__value.pos { color: var(--pos); }
-    .total-stat__value.neg { color: var(--neg); }
-
-    .total-stat__label {
+    .standing-stat__name {
       display: block;
-      margin-top: 8px;
-      font-family: var(--font-body);
+      margin-top: 6px;
       font-size: 8px;
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: rgba(201,168,76,0.60);
     }
 
-    .total-stat__arrow {
+    .standing-stat__bankroll {
+      display: block;
+      margin-top: 4px;
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      color: rgba(240,235,224,0.28);
+    }
+
+    .standing-stat__arrow {
       display: block;
       margin-top: 6px;
       font-size: 9px;
       color: rgba(201,168,76,0);
       transition: color 0.2s ease;
-      letter-spacing: 0.10em;
     }
 
-    .total-stat:hover .total-stat__arrow { color: rgba(201,168,76,0.55); }
+    .standing-stat:hover .standing-stat__arrow { color: rgba(201,168,76,0.55); }
 
+    /* ── Latest round card ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--gold-border);
-      padding: clamp(20px, 4vw, 34px);
+      padding: clamp(20px,4vw,34px);
       margin-bottom: 18px;
       backdrop-filter: blur(14px);
       position: relative;
@@ -235,7 +244,6 @@
     }
 
     .card__label {
-      font-family: var(--font-body);
       font-size: 9px;
       letter-spacing: 0.34em;
       text-transform: uppercase;
@@ -245,6 +253,136 @@
 
     canvas { max-height: 270px; }
 
+    /* ── Round result compact ── */
+    .round-result {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 1px;
+      background: var(--gold-border);
+      border: 1px solid var(--gold-border);
+    }
+
+    .round-result__player {
+      background: var(--ink);
+      padding: 16px 12px;
+      text-align: center;
+    }
+
+    .round-result__name {
+      display: block;
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.55);
+      margin-bottom: 6px;
+    }
+
+    .round-result__money {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(18px,3vw,28px);
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .round-result__money.pos { color: var(--pos); }
+    .round-result__money.neg { color: var(--neg); }
+    .round-result__money.eve { color: var(--cream-dim); }
+
+    .round-result__sub {
+      display: block;
+      margin-top: 4px;
+      font-size: 8px;
+      color: rgba(240,235,224,0.28);
+      letter-spacing: 0.10em;
+    }
+
+    /* ── Navigation row ── */
+    .nav-row {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+      animation: fadeUp 0.8s var(--ease) 0.30s both;
+    }
+
+    .nav-card {
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      padding: 24px 20px;
+      text-decoration: none;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s ease, border-color 0.25s ease;
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 24px; height: 24px;
+      border-top: 1px solid rgba(201,168,76,0.40);
+      border-left: 1px solid rgba(201,168,76,0.40);
+    }
+
+    .nav-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 24px; height: 24px;
+      border-bottom: 1px solid rgba(201,168,76,0.40);
+      border-right: 1px solid rgba(201,168,76,0.40);
+    }
+
+    .nav-card:hover {
+      background: rgba(201,168,76,0.06);
+      border-color: rgba(201,168,76,0.45);
+    }
+
+    .nav-card__icon {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 10px;
+      opacity: 0.7;
+    }
+
+    .nav-card__title {
+      display: block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-card:hover .nav-card__title { color: var(--gold); }
+
+    .nav-card__sub {
+      display: block;
+      font-size: 8px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.45);
+    }
+
+    .nav-card__arrow {
+      display: block;
+      margin-top: 12px;
+      font-size: 14px;
+      color: rgba(201,168,76,0);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-card:hover .nav-card__arrow {
+      color: var(--gold);
+      transform: translateX(4px);
+    }
+
+    /* ── Scorecard table ── */
     .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
     .scores-table {
@@ -254,7 +392,7 @@
       font-family: var(--font-body);
     }
 
-    .scores-table thead tr { border-bottom: 1px solid var(--gold-border-th); }
+    .scores-table thead tr { border-bottom: 1px solid rgba(201,168,76,0.32); }
 
     .scores-table th {
       padding: 10px 12px;
@@ -301,7 +439,6 @@
     .player-link {
       text-decoration: none;
       color: inherit;
-      transition: color 0.2s ease;
     }
     .player-link:hover .player-name { color: var(--gold); }
     .player-link:hover .player-id   { color: rgba(201,168,76,0.80); }
@@ -324,23 +461,41 @@
 
     .money-pos { color: var(--pos); }
     .money-neg { color: var(--neg); }
-    .money-eve { color: var(--cream); }
+    .money-eve { color: var(--cream-dim); }
 
     .page-note {
       text-align: center;
       margin-top: 20px;
-      font-family: var(--font-body);
       font-size: 9px;
       letter-spacing: 0.20em;
       text-transform: uppercase;
       color: rgba(201,168,76,0.35);
     }
 
+    /* ── Season recap badge (R6 only) ── */
+    .recap-badge {
+      display: none;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid var(--gold-border);
+      margin-bottom: 18px;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .recap-badge:hover { background: rgba(201,168,76,0.06); }
+    .recap-badge.visible { display: block; }
+
     @media (max-width: 600px) {
-      .wrap          { padding: 32px 0 60px; }
+      .wrap        { padding: 32px 0 60px; }
       .header__title { font-size: 56px; }
-      .totals        { grid-template-columns: repeat(2, 1fr); }
-      .card          { padding: 18px 14px; }
+      .standings   { grid-template-columns: repeat(2,1fr); }
+      .round-result { grid-template-columns: repeat(2,1fr); }
+      .nav-row     { grid-template-columns: 1fr; }
+      .card        { padding: 18px 14px; }
     }
   </style>
 </head>
@@ -352,20 +507,56 @@
   <main class="wrap">
 
     <header class="header">
-      <span class="header__kicker">Season 0</span>
-      <h1 class="header__title" id="headerTitle">Round 1</h1>
-      <span class="header__sub">Clubhouse Standings</span>
+      <span class="header__kicker">Season 0 · Members</span>
+      <h1 class="header__title" id="headerTitle">Clubhouse</h1>
+      <span class="header__sub" id="headerSub">Season Standings</span>
     </header>
 
-    <div class="totals" id="seasonTotals"></div>
+    <!-- Season standings bar — cumulative $ -->
+    <div class="standings" id="seasonStandings"></div>
 
+    <!-- Navigation row -->
+    <nav class="nav-row">
+      <a class="nav-card" href="https://season0.pro/members/scorecards/">
+        <span class="nav-card__icon">⛳</span>
+        <span class="nav-card__title">Scorecards</span>
+        <span class="nav-card__sub">Round by round</span>
+        <span class="nav-card__arrow">→</span>
+      </a>
+      <a class="nav-card" href="https://season0.pro/members/pairings/">
+        <span class="nav-card__icon">⚔</span>
+        <span class="nav-card__title">Pairings</span>
+        <span class="nav-card__sub">Head to head</span>
+        <span class="nav-card__arrow">→</span>
+      </a>
+      <a class="nav-card" href="https://season0.pro/members/players/">
+        <span class="nav-card__icon">👤</span>
+        <span class="nav-card__title">Players</span>
+        <span class="nav-card__sub">Individual stats</span>
+        <span class="nav-card__arrow">→</span>
+      </a>
+    </nav>
+
+    <!-- Season Recap — only shows at R6 -->
+    <a class="recap-badge" id="recapBadge" href="https://season0.pro/members/recap/">
+      ★ Season Complete · View Final Recap →
+    </a>
+
+    <!-- Latest round summary -->
+    <section class="card reveal">
+      <p class="card__label" id="roundLabel">Latest Round</p>
+      <div class="round-result" id="roundResult"></div>
+    </section>
+
+    <!-- Chart -->
     <section class="card reveal">
       <p class="card__label" id="chartLabel">Round $</p>
       <canvas id="roundChart"></canvas>
     </section>
 
+    <!-- Full scorecard -->
     <section class="card reveal">
-      <p class="card__label">Full Scorecard</p>
+      <p class="card__label" id="scorecardLabel">Full Scorecard</p>
       <div class="table-wrap">
         <table class="scores-table">
           <thead>
@@ -392,19 +583,23 @@
   </main>
 
   <script>
-    // ── Pull latest round from data.js ─────────────────────
-    const latest  = SEASON.latestRound;
+    const latest   = SEASON.latestRound;
     const roundNum = latest.round;
+    const rPlayed  = SEASON.roundsPlayed;
 
-    // Build ordered array from latest round scores + player info
+    // Build ordered array from latest round
     const ordered = SEASON.players.map(p => {
       const s = latest.scores[p.id];
+      const st = SEASON.standings.find(x => x.id === p.id);
       return {
         playerId:   p.id,
         player:     p.name,
         short:      p.short,
         roundMoney: s.roundMoney,
-        total:      s.gross,
+        cumMoney:   st.cumMoney,
+        bankroll:   st.bankroll,
+        rank:       st.rank,
+        gross:      s.gross,
         net:        s.net,
         holeWins:   s.holeWins,
         holeLosses: s.holeLosses,
@@ -415,14 +610,12 @@
       };
     }).sort((a, b) => b.roundMoney - a.roundMoney);
 
-    // ── Header ─────────────────────────────────────────────
-    document.getElementById("headerTitle").textContent = `Round ${roundNum}`;
-    document.getElementById("chartLabel").textContent  = `Round ${roundNum} $`;
-    document.getElementById("pageNote").textContent    = `Ranked by Round $ · Season ${SEASON.config.season}`;
+    // Standings sorted by cumMoney
+    const byStanding = [...ordered].sort((a,b) => b.cumMoney - a.cumMoney);
 
-    // ── Helpers ────────────────────────────────────────────
     function moneyClass(v) { return v > 0 ? "money-pos" : v < 0 ? "money-neg" : "money-eve"; }
     function moneyText(v)  { return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0"; }
+    function fmt(v)        { return v.toLocaleString(); }
 
     function countUp(el, target, duration) {
       const start = performance.now();
@@ -438,25 +631,48 @@
       requestAnimationFrame(step);
     }
 
-    // ── Totals bar ─────────────────────────────────────────
-    function buildTotals() {
-      document.getElementById("seasonTotals").innerHTML = ordered.map(p => `
-        <a class="total-stat" href="https://season0.pro/members/players/${p.playerId}/">
-          <span class="total-stat__value ${p.roundMoney > 0 ? 'pos' : p.roundMoney < 0 ? 'neg' : ''}"
-                data-target="${p.roundMoney}">$0</span>
-          <span class="total-stat__label">${p.short}</span>
-          <span class="total-stat__arrow">→</span>
-        </a>
-      `).join("");
+    // ── Header ────────────────────────────────────────────
+    document.getElementById("headerSub").textContent =
+      `After Round ${roundNum} · ${rPlayed} of ${SEASON.config.rounds} played`;
+    document.getElementById("roundLabel").textContent      = `Round ${roundNum} Results`;
+    document.getElementById("chartLabel").textContent      = `Round ${roundNum} $`;
+    document.getElementById("scorecardLabel").textContent  = `Round ${roundNum} · Full Scorecard`;
+    document.getElementById("pageNote").textContent        =
+      `Ranked by Round ${roundNum} $ · Season 0`;
 
-      setTimeout(() => {
-        document.querySelectorAll(".total-stat__value[data-target]").forEach((el, i) => {
-          setTimeout(() => countUp(el, parseInt(el.dataset.target), 900), i * 80);
-        });
-      }, 400);
+    // ── Season Recap badge (R6 only) ──────────────────────
+    if (rPlayed >= SEASON.config.rounds) {
+      document.getElementById("recapBadge").classList.add("visible");
     }
 
-    // ── Scorecard table ────────────────────────────────────
+    // ── Season standings bar ──────────────────────────────
+    document.getElementById("seasonStandings").innerHTML = byStanding.map(p => `
+      <a class="standing-stat" href="https://season0.pro/members/players/${p.playerId}/">
+        <span class="standing-stat__rank">#${p.rank}</span>
+        <span class="standing-stat__value ${p.cumMoney > 0 ? 'pos' : p.cumMoney < 0 ? 'neg' : ''}"
+              data-target="${p.cumMoney}">$0</span>
+        <span class="standing-stat__name">${p.short}</span>
+        <span class="standing-stat__bankroll">$${fmt(p.bankroll)} bankroll</span>
+        <span class="standing-stat__arrow">→</span>
+      </a>
+    `).join("");
+
+    setTimeout(() => {
+      document.querySelectorAll(".standing-stat__value[data-target]").forEach((el, i) => {
+        setTimeout(() => countUp(el, parseInt(el.dataset.target), 900), i * 80);
+      });
+    }, 300);
+
+    // ── Round result compact ──────────────────────────────
+    document.getElementById("roundResult").innerHTML = ordered.map(p => `
+      <div class="round-result__player">
+        <span class="round-result__name">${p.short}</span>
+        <span class="round-result__money ${p.roundMoney > 0 ? 'pos' : p.roundMoney < 0 ? 'neg' : 'eve'}">${moneyText(p.roundMoney)}</span>
+        <span class="round-result__sub">${p.gross} gross · ${p.holeWins}W ${p.holeLosses}L</span>
+      </div>
+    `).join("");
+
+    // ── Scorecard table ───────────────────────────────────
     document.getElementById("roundTable").innerHTML = ordered.map((p, i) => `
       <tr>
         <td>
@@ -467,7 +683,7 @@
           </a>
         </td>
         <td class="${moneyClass(p.roundMoney)}">${moneyText(p.roundMoney)}</td>
-        <td>${p.total}</td>
+        <td>${p.gross}</td>
         <td>${p.net}</td>
         <td>${p.holeWins}</td>
         <td>${p.holeLosses}</td>
@@ -478,7 +694,7 @@
       </tr>
     `).join("");
 
-    // ── Chart ──────────────────────────────────────────────
+    // ── Chart ─────────────────────────────────────────────
     new Chart(document.getElementById("roundChart"), {
       type: "bar",
       data: {
@@ -488,8 +704,7 @@
           data: ordered.map(p => p.roundMoney),
           backgroundColor: ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
           borderColor:     ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
-          borderWidth: 1,
-          borderRadius: 2
+          borderWidth: 1, borderRadius: 2
         }]
       },
       options: {
@@ -498,13 +713,13 @@
         plugins: { legend: { display: false } },
         scales: {
           x: {
-            ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 11 } },
+            ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville',Georgia,serif", size: 11 } },
             grid:  { color: "rgba(201,168,76,0.05)" }
           },
           y: {
             ticks: {
               color: "rgba(240,235,224,0.50)",
-              font:  { family: "'Libre Baskerville', Georgia, serif", size: 10 },
+              font:  { family: "'Libre Baskerville',Georgia,serif", size: 10 },
               callback: v => (v >= 0 ? "+$" : "-$") + Math.abs(v)
             },
             grid: { color: "rgba(201,168,76,0.05)" }
@@ -513,15 +728,13 @@
       }
     });
 
-    // ── Scroll reveal ──────────────────────────────────────
+    // ── Scroll reveal ─────────────────────────────────────
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
       });
     }, { threshold: 0.08 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    buildTotals();
   </script>
 </body>
 </html>
