@@ -1,1 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Season 0 — William Templeton</title>
+  <script src="/members/data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 
+  <style>
+    :root {
+      --ink:            #080e0b;
+      --surface:        rgba(8, 16, 12, 0.88);
+      --gold:           #c9a84c;
+      --gold-border:    rgba(201, 168, 76, 0.24);
+      --gold-border-th: rgba(201, 168, 76, 0.32);
+      --gold-dim:       rgba(201, 168, 76, 0.08);
+      --gold-rule:      rgba(201, 168, 76, 0.10);
+      --cream:          #f0ebe0;
+      --cream-dim:      rgba(240, 235, 224, 0.50);
+      --cream-faint:    rgba(240, 235, 224, 0.07);
+      --green-glow:     rgba(18, 42, 26, 0.65);
+      --pos:            #7ecf9e;
+      --neg:            #d97b7b;
+      --font-display:   'Playfair Display', Georgia, serif;
+      --font-body:      'Libre Baskerville', Georgia, serif;
+      --ease:           cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--cream);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, var(--green-glow) 0%, transparent 65%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.030;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    .rule-top {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 10;
+    }
+
+    .back {
+      position: fixed;
+      top: 16px;
+      left: 20px;
+      z-index: 50;
+      color: rgba(201,168,76,0.45);
+      font-family: var(--font-body);
+      font-size: 20px;
+      text-decoration: none;
+      line-height: 1;
+      transition: color 0.2s ease;
+    }
+    .back:hover { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 64px 0 90px;
+    }
+
+    .player-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s var(--ease) 0.1s both;
+    }
+
+    .player-header__kicker {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .player-header__name {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 8vw, 80px);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 0.92;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+    }
+
+    .player-header__id {
+      display: inline-block;
+      margin-top: 10px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.55);
+    }
+
+    .player-header__right { text-align: right; }
+
+    .player-header__rank-label {
+      display: block;
+      font-size: 8px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.55);
+      margin-bottom: 6px;
+    }
+
+    .player-header__rank {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 72px);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold-border), transparent);
+      margin-bottom: 32px;
+      animation: fadeUp 0.8s var(--ease) 0.18s both;
+    }
+
+    .key-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--gold-border);
+      border: 1px solid var(--gold-border);
+      margin-bottom: 24px;
+      animation: fadeUp 0.8s var(--ease) 0.22s both;
+    }
+
+    .key-stat {
+      background: var(--ink);
+      padding: clamp(14px, 3vw, 24px) clamp(10px, 2vw, 18px);
+      text-align: center;
+      transition: background 0.2s ease;
+    }
+
+    .key-stat:hover { background: rgba(201,168,76,0.05); }
+
+    .key-stat__value {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 400;
+      line-height: 1;
+      color: var(--cream);
+    }
+
+    .key-stat__value.pos { color: var(--pos); }
+    .key-stat__value.neg { color: var(--neg); }
+
+    .key-stat__label {
+      display: block;
+      margin-top: 6px;
+      font-size: 8px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.55);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      padding: clamp(20px, 4vw, 34px);
+      margin-bottom: 18px;
+      backdrop-filter: blur(14px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 16px 48px rgba(0,0,0,0.4);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 32px; height: 32px;
+      border-top: 1px solid rgba(201,168,76,0.40);
+      border-left: 1px solid rgba(201,168,76,0.40);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 32px; height: 32px;
+      border-bottom: 1px solid rgba(201,168,76,0.40);
+      border-right: 1px solid rgba(201,168,76,0.40);
+    }
+
+    .card__label {
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin: 0 0 20px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .round-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-body);
+    }
+
+    .round-table thead tr { border-bottom: 1px solid var(--gold-border-th); }
+
+    .round-table th {
+      padding: 10px 12px;
+      text-align: left;
+      color: var(--gold);
+      font-size: 8px;
+      font-weight: 400;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .round-table td {
+      padding: 13px 12px;
+      color: var(--cream);
+      font-size: 13px;
+      border-bottom: 1px solid var(--gold-rule);
+      white-space: nowrap;
+    }
+
+    .round-table tbody tr:last-child td { border-bottom: none; }
+    .round-table tbody tr { transition: background 0.2s ease; }
+    .round-table tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+    .wolf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--gold-border);
+      border: 1px solid var(--gold-border);
+    }
+
+    .wolf-stat {
+      background: var(--ink);
+      padding: clamp(12px, 2.5vw, 20px);
+      text-align: center;
+    }
+
+    .wolf-stat__value {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3.5vw, 34px);
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    .wolf-stat__label {
+      display: block;
+      margin-top: 6px;
+      font-size: 8px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.55);
+    }
+
+    .payout-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gold-rule);
+    }
+
+    .payout-row:last-child { border-bottom: none; }
+
+    .payout-row__round {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+    }
+
+    .payout-row__amount {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    .payout-row__amount.pos { color: var(--pos); }
+    .payout-row__amount.neg { color: var(--neg); }
+    .payout-row__amount.eve { color: var(--cream-dim); }
+
+    .bankroll {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0 0;
+      margin-top: 8px;
+      border-top: 1px solid var(--gold-border);
+    }
+
+    .bankroll__label {
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .bankroll__value {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3.5vw, 32px);
+      font-weight: 400;
+      color: var(--cream);
+    }
+
+    .bankroll__value.pos { color: var(--pos); }
+    .bankroll__value.neg { color: var(--neg); }
+
+    canvas { max-height: 220px; }
+
+    .page-note {
+      text-align: center;
+      margin-top: 20px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.35);
+    }
+
+    @media (max-width: 600px) {
+      .wrap          { padding: 32px 0 60px; }
+      .key-stats     { grid-template-columns: repeat(2, 1fr); }
+      .two-col       { grid-template-columns: 1fr; }
+      .player-header { flex-direction: column; align-items: flex-start; }
+      .player-header__right { text-align: left; }
+      .card          { padding: 18px 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rule-top"></div>
+  <a class="back" href="https://season0.pro/members/">←</a>
+
+  <main class="wrap">
+
+    <div class="player-header">
+      <div class="player-header__left">
+        <span class="player-header__kicker">Season 0 · Player</span>
+        <h1 class="player-header__name" id="playerName"></h1>
+        <span class="player-header__id" id="playerId"></span>
+      </div>
+      <div class="player-header__right">
+        <span class="player-header__rank-label">Season Rank</span>
+        <div class="player-header__rank" id="playerRank"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="key-stats">
+      <div class="key-stat">
+        <span class="key-stat__value" id="statSeasonNet"></span>
+        <span class="key-stat__label">Season Net</span>
+      </div>
+      <div class="key-stat">
+        <span class="key-stat__value" id="statAvgGross"></span>
+        <span class="key-stat__label">Avg Gross</span>
+      </div>
+      <div class="key-stat">
+        <span class="key-stat__value" id="statAvgNet"></span>
+        <span class="key-stat__label">Avg Net</span>
+      </div>
+      <div class="key-stat">
+        <span class="key-stat__value" id="statWolfRecord"></span>
+        <span class="key-stat__label">Wolf Record</span>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <section class="card reveal">
+        <p class="card__label">Round History</p>
+        <table class="round-table">
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Gross</th>
+              <th>Net</th>
+              <th>Hole W</th>
+              <th>Hole L</th>
+              <th>Birdies</th>
+            </tr>
+          </thead>
+          <tbody id="roundHistory"></tbody>
+        </table>
+      </section>
+
+      <section class="card reveal">
+        <p class="card__label">Payout Breakdown</p>
+        <div id="payoutList"></div>
+        <div class="bankroll">
+          <span class="bankroll__label">Current Bankroll</span>
+          <span class="bankroll__value" id="bankrollValue"></span>
+        </div>
+      </section>
+    </div>
+
+    <div class="two-col">
+      <section class="card reveal">
+        <p class="card__label">Wolf Breakdown</p>
+        <div class="wolf-grid" id="wolfGrid"></div>
+      </section>
+
+      <section class="card reveal">
+        <p class="card__label">Payout by Round</p>
+        <canvas id="payoutChart"></canvas>
+      </section>
+    </div>
+
+    <section class="card reveal">
+      <p class="card__label">Stroke Analysis</p>
+      <canvas id="strokeChart"></canvas>
+    </section>
+
+    <p class="page-note" id="pageNote"></p>
+
+  </main>
+
+  <script>
+    // ── THE ONLY LINE THAT CHANGES PER PLAYER PAGE ──
+    const PLAYER_ID = "JT";
+
+    // ── Pull from data.js ──────────────────────────
+    const playerInfo  = SEASON.players.find(p => p.id === PLAYER_ID);
+    const standing    = SEASON.standings.find(p => p.id === PLAYER_ID);
+    const totals      = SEASON.playerTotals(PLAYER_ID);
+    const rounds      = SEASON.rounds.map(r => ({ ...r.scores[PLAYER_ID], label: `Round ${r.round}`, round: r.round }));
+
+    function moneyClass(v) { return v > 0 ? "pos" : v < 0 ? "neg" : "eve"; }
+    function moneyText(v)  { return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0"; }
+    function fmt(v)        { return v.toLocaleString(); }
+
+    // ── Header ────────────────────────────────────
+    document.title = `Season 0 — ${playerInfo.name}`;
+    document.getElementById("playerName").textContent = playerInfo.name;
+    document.getElementById("playerId").textContent   = `${playerInfo.id} · HDCP ${playerInfo.hdcp}`;
+    document.getElementById("playerRank").textContent = `#${standing.rank}`;
+
+    // ── Key stats ─────────────────────────────────
+    const snEl = document.getElementById("statSeasonNet");
+    snEl.textContent = moneyText(standing.cumMoney);
+    snEl.className   = `key-stat__value ${moneyClass(standing.cumMoney)}`;
+
+    document.getElementById("statAvgGross").textContent = totals.avgGross;
+    document.getElementById("statAvgNet").textContent   = totals.avgNet;
+
+    const wrEl = document.getElementById("statWolfRecord");
+    wrEl.textContent = `${totals.wolfWins}W · ${totals.wolfLosses}L`;
+    wrEl.className   = `key-stat__value ${totals.wolfWins > totals.wolfLosses ? 'pos' : totals.wolfWins < totals.wolfLosses ? 'neg' : ''}`;
+
+    // ── Round history table ───────────────────────
+    document.getElementById("roundHistory").innerHTML = rounds.map(r => `
+      <tr>
+        <td>${r.label}</td>
+        <td>${r.gross}</td>
+        <td>${r.net}</td>
+        <td>${r.holeWins}</td>
+        <td>${r.holeLosses}</td>
+        <td>${r.birdies}</td>
+      </tr>
+    `).join("");
+
+    // ── Payout breakdown ──────────────────────────
+    document.getElementById("payoutList").innerHTML = rounds.map(r => `
+      <div class="payout-row">
+        <span class="payout-row__round">${r.label}</span>
+        <span class="payout-row__amount ${moneyClass(r.roundMoney)}">${moneyText(r.roundMoney)}</span>
+      </div>
+    `).join("");
+
+    const brEl = document.getElementById("bankrollValue");
+    brEl.textContent = `$${fmt(standing.bankroll)}`;
+    brEl.className   = `bankroll__value ${moneyClass(standing.cumMoney)}`;
+
+    // ── Wolf grid ─────────────────────────────────
+    document.getElementById("wolfGrid").innerHTML = [
+      { label: "Solo Wins",     value: totals.wolfWins  },
+      { label: "Wolf Wins",     value: totals.wolfWins  },
+      { label: "Wolf Losses",   value: totals.wolfLosses },
+      { label: "Total Wins",    value: SEASON.rounds.reduce((s,r) => s+(r.scores[PLAYER_ID]?.wolfWins||0),0) },
+      { label: "Total Losses",  value: SEASON.rounds.reduce((s,r) => s+(r.scores[PLAYER_ID]?.wolfLosses||0),0) },
+      { label: "Blocker Wins",  value: SEASON.rounds.reduce((s,r) => s+(r.scores[PLAYER_ID]?.blockerWins||0),0) },
+    ].map(s => `
+      <div class="wolf-stat">
+        <span class="wolf-stat__value">${s.value}</span>
+        <span class="wolf-stat__label">${s.label}</span>
+      </div>
+    `).join("");
+
+    // ── Payout chart ──────────────────────────────
+    new Chart(document.getElementById("payoutChart"), {
+      type: "bar",
+      data: {
+        labels: rounds.map(r => r.label),
+        datasets: [{
+          data: rounds.map(r => r.roundMoney),
+          backgroundColor: rounds.map(r => r.roundMoney >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
+          borderColor:     rounds.map(r => r.roundMoney >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
+          borderWidth: 1, borderRadius: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 } }, grid: { color: "rgba(201,168,76,0.05)" } },
+          y: { ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 }, callback: v => (v >= 0 ? "+$" : "-$") + Math.abs(v) }, grid: { color: "rgba(201,168,76,0.05)" } }
+        }
+      }
+    });
+
+    // ── Stroke analysis chart ─────────────────────
+    new Chart(document.getElementById("strokeChart"), {
+      type: "bar",
+      data: {
+        labels: rounds.map(r => r.label),
+        datasets: [
+          { label: "Gross", data: rounds.map(r => r.gross), backgroundColor: "rgba(240,235,224,0.12)", borderColor: "rgba(240,235,224,0.45)", borderWidth: 1, borderRadius: 2 },
+          { label: "Net",   data: rounds.map(r => r.net),   backgroundColor: "rgba(201,168,76,0.18)",  borderColor: "rgba(201,168,76,0.75)",  borderWidth: 1, borderRadius: 2 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 }, boxWidth: 10 } } },
+        scales: {
+          x: { ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 } }, grid: { color: "rgba(201,168,76,0.05)" } },
+          y: { ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 } }, grid: { color: "rgba(201,168,76,0.05)" } }
+        }
+      }
+    });
+
+    // ── Page note ─────────────────────────────────
+    document.getElementById("pageNote").textContent =
+      `Season 0 · All stats through Round ${SEASON.roundsPlayed}`;
+
+    // ── Scroll reveal ─────────────────────────────
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
