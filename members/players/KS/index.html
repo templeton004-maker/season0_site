@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Season 0 — Kyle Story</title>
+  <script src="/members/data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -402,12 +403,12 @@
     <div class="player-header">
       <div class="player-header__left">
         <span class="player-header__kicker">Season 0 · Player</span>
-        <h1 class="player-header__name" id="playerName">Kyle Story</h1>
-        <span class="player-header__id" id="playerId">KS · HDCP 0</span>
+        <h1 class="player-header__name" id="playerName"></h1>
+        <span class="player-header__id" id="playerId"></span>
       </div>
       <div class="player-header__right">
         <span class="player-header__rank-label">Season Rank</span>
-        <div class="player-header__rank" id="playerRank">#1</div>
+        <div class="player-header__rank" id="playerRank"></div>
       </div>
     </div>
 
@@ -415,19 +416,19 @@
 
     <div class="key-stats">
       <div class="key-stat">
-        <span class="key-stat__value pos" id="statSeasonNet">+$160</span>
+        <span class="key-stat__value" id="statSeasonNet"></span>
         <span class="key-stat__label">Season Net</span>
       </div>
       <div class="key-stat">
-        <span class="key-stat__value" id="statAvgGross">75</span>
+        <span class="key-stat__value" id="statAvgGross"></span>
         <span class="key-stat__label">Avg Gross</span>
       </div>
       <div class="key-stat">
-        <span class="key-stat__value" id="statAvgNet">75</span>
+        <span class="key-stat__value" id="statAvgNet"></span>
         <span class="key-stat__label">Avg Net</span>
       </div>
       <div class="key-stat">
-        <span class="key-stat__value pos" id="statWolfRecord">4W · 0L</span>
+        <span class="key-stat__value" id="statWolfRecord"></span>
         <span class="key-stat__label">Wolf Record</span>
       </div>
     </div>
@@ -455,7 +456,7 @@
         <div id="payoutList"></div>
         <div class="bankroll">
           <span class="bankroll__label">Current Bankroll</span>
-          <span class="bankroll__value pos" id="bankrollValue">$10,480</span>
+          <span class="bankroll__value" id="bankrollValue"></span>
         </div>
       </section>
     </div>
@@ -477,61 +478,44 @@
       <canvas id="strokeChart"></canvas>
     </section>
 
-    <p class="page-note">Season 0 · All stats through Round 1</p>
+    <p class="page-note" id="pageNote"></p>
 
   </main>
 
   <script>
-    const player = {
-      id:               "KS",
-      name:             "Kyle Story",
-      hdcp:             0,
-      seasonRank:       1,
-      startingBankroll: 10320,
-      rounds: [
-        {
-          label:      "Round 1",
-          gross:      75,
-          net:        75,
-          holeWins:   8,
-          holeLosses: 6,
-          holeHalves: 4,
-          birdies:    3,
-          eagles:     0,
-          bogeys:     0,
-          payout:     160
-        }
-      ],
-      wolf: {
-        soloWins:    0,
-        loneWins:    0,
-        blindWins:   0,
-        blockerWins: 0,
-        totalWins:   4,
-        totalLosses: 0
-      }
-    };
+    // ── THE ONLY LINE THAT CHANGES PER PLAYER PAGE ──
+    const PLAYER_ID = "KS";
 
-    const totalPayout     = player.rounds.reduce((s, r) => s + r.payout, 0);
-    const currentBankroll = player.startingBankroll + totalPayout;
-    const avgGross        = (player.rounds.reduce((s, r) => s + r.gross, 0) / player.rounds.length).toFixed(1);
-    const avgNet          = (player.rounds.reduce((s, r) => s + r.net, 0) / player.rounds.length).toFixed(1);
+    // ── Pull from data.js ──────────────────────────
+    const playerInfo  = SEASON.players.find(p => p.id === PLAYER_ID);
+    const standing    = SEASON.standings.find(p => p.id === PLAYER_ID);
+    const totals      = SEASON.playerTotals(PLAYER_ID);
+    const rounds      = SEASON.rounds.map(r => ({ ...r.scores[PLAYER_ID], label: `Round ${r.round}`, round: r.round }));
 
     function moneyClass(v) { return v > 0 ? "pos" : v < 0 ? "neg" : "eve"; }
     function moneyText(v)  { return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0"; }
     function fmt(v)        { return v.toLocaleString(); }
 
-    document.getElementById("playerName").textContent    = player.name;
-    document.getElementById("playerId").textContent      = `${player.id} · HDCP ${player.hdcp}`;
-    document.getElementById("playerRank").textContent    = `#${player.seasonRank}`;
-    document.getElementById("statSeasonNet").textContent = moneyText(totalPayout);
-    document.getElementById("statSeasonNet").className   = `key-stat__value ${moneyClass(totalPayout)}`;
-    document.getElementById("statAvgGross").textContent  = avgGross;
-    document.getElementById("statAvgNet").textContent    = avgNet;
-    document.getElementById("statWolfRecord").textContent = `${player.wolf.totalWins}W · ${player.wolf.totalLosses}L`;
-    document.getElementById("statWolfRecord").className   = `key-stat__value ${player.wolf.totalWins > player.wolf.totalLosses ? 'pos' : player.wolf.totalWins < player.wolf.totalLosses ? 'neg' : ''}`;
+    // ── Header ────────────────────────────────────
+    document.title = `Season 0 — ${playerInfo.name}`;
+    document.getElementById("playerName").textContent = playerInfo.name;
+    document.getElementById("playerId").textContent   = `${playerInfo.id} · HDCP ${playerInfo.hdcp}`;
+    document.getElementById("playerRank").textContent = `#${standing.rank}`;
 
-    document.getElementById("roundHistory").innerHTML = player.rounds.map(r => `
+    // ── Key stats ─────────────────────────────────
+    const snEl = document.getElementById("statSeasonNet");
+    snEl.textContent = moneyText(standing.cumMoney);
+    snEl.className   = `key-stat__value ${moneyClass(standing.cumMoney)}`;
+
+    document.getElementById("statAvgGross").textContent = totals.avgGross;
+    document.getElementById("statAvgNet").textContent   = totals.avgNet;
+
+    const wrEl = document.getElementById("statWolfRecord");
+    wrEl.textContent = `${totals.wolfWins}W · ${totals.wolfLosses}L`;
+    wrEl.className   = `key-stat__value ${totals.wolfWins > totals.wolfLosses ? 'pos' : totals.wolfWins < totals.wolfLosses ? 'neg' : ''}`;
+
+    // ── Round history table ───────────────────────
+    document.getElementById("roundHistory").innerHTML = rounds.map(r => `
       <tr>
         <td>${r.label}</td>
         <td>${r.gross}</td>
@@ -542,23 +526,26 @@
       </tr>
     `).join("");
 
-    document.getElementById("payoutList").innerHTML = player.rounds.map(r => `
+    // ── Payout breakdown ──────────────────────────
+    document.getElementById("payoutList").innerHTML = rounds.map(r => `
       <div class="payout-row">
         <span class="payout-row__round">${r.label}</span>
-        <span class="payout-row__amount ${moneyClass(r.payout)}">${moneyText(r.payout)}</span>
+        <span class="payout-row__amount ${moneyClass(r.roundMoney)}">${moneyText(r.roundMoney)}</span>
       </div>
     `).join("");
 
-    document.getElementById("bankrollValue").textContent = `$${fmt(currentBankroll)}`;
-    document.getElementById("bankrollValue").className   = `bankroll__value ${moneyClass(totalPayout)}`;
+    const brEl = document.getElementById("bankrollValue");
+    brEl.textContent = `$${fmt(standing.bankroll)}`;
+    brEl.className   = `bankroll__value ${moneyClass(standing.cumMoney)}`;
 
+    // ── Wolf grid ─────────────────────────────────
     document.getElementById("wolfGrid").innerHTML = [
-      { label: "Solo Wins",    value: player.wolf.soloWins },
-      { label: "Lone Wins",    value: player.wolf.loneWins },
-      { label: "Blind Wins",   value: player.wolf.blindWins },
-      { label: "Total Wins",   value: player.wolf.totalWins },
-      { label: "Total Losses", value: player.wolf.totalLosses },
-      { label: "Blocker Wins", value: player.wolf.blockerWins },
+      { label: "Solo Wins",     value: totals.wolfWins  },
+      { label: "Wolf Wins",     value: totals.wolfWins  },
+      { label: "Wolf Losses",   value: totals.wolfLosses },
+      { label: "Total Wins",    value: SEASON.rounds.reduce((s,r) => s+(r.scores[PLAYER_ID]?.wolfWins||0),0) },
+      { label: "Total Losses",  value: SEASON.rounds.reduce((s,r) => s+(r.scores[PLAYER_ID]?.wolfLosses||0),0) },
+      { label: "Blocker Wins",  value: SEASON.rounds.reduce((s,r) => s+(r.scores[PLAYER_ID]?.blockerWins||0),0) },
     ].map(s => `
       <div class="wolf-stat">
         <span class="wolf-stat__value">${s.value}</span>
@@ -566,14 +553,15 @@
       </div>
     `).join("");
 
+    // ── Payout chart ──────────────────────────────
     new Chart(document.getElementById("payoutChart"), {
       type: "bar",
       data: {
-        labels: player.rounds.map(r => r.label),
+        labels: rounds.map(r => r.label),
         datasets: [{
-          data: player.rounds.map(r => r.payout),
-          backgroundColor: player.rounds.map(r => r.payout >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
-          borderColor:     player.rounds.map(r => r.payout >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
+          data: rounds.map(r => r.roundMoney),
+          backgroundColor: rounds.map(r => r.roundMoney >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
+          borderColor:     rounds.map(r => r.roundMoney >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
           borderWidth: 1, borderRadius: 2
         }]
       },
@@ -587,34 +575,19 @@
       }
     });
 
+    // ── Stroke analysis chart ─────────────────────
     new Chart(document.getElementById("strokeChart"), {
       type: "bar",
       data: {
-        labels: player.rounds.map(r => r.label),
+        labels: rounds.map(r => r.label),
         datasets: [
-          {
-            label: "Gross",
-            data: player.rounds.map(r => r.gross),
-            backgroundColor: "rgba(240,235,224,0.12)",
-            borderColor: "rgba(240,235,224,0.45)",
-            borderWidth: 1, borderRadius: 2
-          },
-          {
-            label: "Net",
-            data: player.rounds.map(r => r.net),
-            backgroundColor: "rgba(201,168,76,0.18)",
-            borderColor: "rgba(201,168,76,0.75)",
-            borderWidth: 1, borderRadius: 2
-          }
+          { label: "Gross", data: rounds.map(r => r.gross), backgroundColor: "rgba(240,235,224,0.12)", borderColor: "rgba(240,235,224,0.45)", borderWidth: 1, borderRadius: 2 },
+          { label: "Net",   data: rounds.map(r => r.net),   backgroundColor: "rgba(201,168,76,0.18)",  borderColor: "rgba(201,168,76,0.75)",  borderWidth: 1, borderRadius: 2 }
         ]
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: {
-            labels: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 }, boxWidth: 10 }
-          }
-        },
+        plugins: { legend: { labels: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 }, boxWidth: 10 } } },
         scales: {
           x: { ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 } }, grid: { color: "rgba(201,168,76,0.05)" } },
           y: { ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville', Georgia, serif", size: 10 } }, grid: { color: "rgba(201,168,76,0.05)" } }
@@ -622,12 +595,16 @@
       }
     });
 
+    // ── Page note ─────────────────────────────────
+    document.getElementById("pageNote").textContent =
+      `Season 0 · All stats through Round ${SEASON.roundsPlayed}`;
+
+    // ── Scroll reveal ─────────────────────────────
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
       });
     }, { threshold: 0.08 });
-
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
 </body>
