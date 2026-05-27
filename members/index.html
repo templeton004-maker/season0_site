@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Season 0 — Clubhouse</title>
+  <script src="/members/data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,7 +157,6 @@
       animation: fadeUp 0.8s var(--ease) 0.22s both;
     }
 
-    /* ── Total stat — now a link ── */
     .total-stat {
       background: var(--ink);
       padding: clamp(16px, 3vw, 28px) clamp(10px, 2vw, 20px);
@@ -194,7 +194,6 @@
       color: rgba(201,168,76,0.60);
     }
 
-    /* Hint arrow on hover */
     .total-stat__arrow {
       display: block;
       margin-top: 6px;
@@ -299,7 +298,6 @@
       background: rgba(201,168,76,0.08);
     }
 
-    /* ── Player name link ── */
     .player-link {
       text-decoration: none;
       color: inherit;
@@ -355,14 +353,14 @@
 
     <header class="header">
       <span class="header__kicker">Season 0</span>
-      <h1 class="header__title">Round 1</h1>
+      <h1 class="header__title" id="headerTitle">Round 1</h1>
       <span class="header__sub">Clubhouse Standings</span>
     </header>
 
     <div class="totals" id="seasonTotals"></div>
 
     <section class="card reveal">
-      <p class="card__label">Round $</p>
+      <p class="card__label" id="chartLabel">Round $</p>
       <canvas id="roundChart"></canvas>
     </section>
 
@@ -374,7 +372,7 @@
             <tr>
               <th>Player</th>
               <th>Round $</th>
-              <th>Total</th>
+              <th>Gross</th>
               <th>Net</th>
               <th>Hole W</th>
               <th>Hole L</th>
@@ -389,20 +387,40 @@
       </div>
     </section>
 
-    <p class="page-note">Ranked by Round $</p>
+    <p class="page-note" id="pageNote"></p>
 
   </main>
 
   <script>
-    const r1Data = [
-      { playerId: "KS", player: "Kyle Story",        roundMoney: 160,  total: 75, net: 75, holeWins: 8,  holeLosses: 6, holeHalves: 4, birdies: 3, wolfWins: 4, wolfLosses: 0 },
-      { playerId: "MJ", player: "Michael Jones",     roundMoney: 20,   total: 97, net: 79, holeWins: 10, holeLosses: 4, holeHalves: 4, birdies: 0, wolfWins: 2, wolfLosses: 1 },
-      { playerId: "WT", player: "William Templeton", roundMoney: 0,    total: 85, net: 81, holeWins: 5,  holeLosses: 9, holeHalves: 4, birdies: 0, wolfWins: 3, wolfLosses: 2 },
-      { playerId: "JT", player: "John Templeton",    roundMoney: -180, total: 80, net: 80, holeWins: 5,  holeLosses: 9, holeHalves: 4, birdies: 1, wolfWins: 0, wolfLosses: 3 }
-    ];
+    // ── Pull latest round from data.js ─────────────────────
+    const latest  = SEASON.latestRound;
+    const roundNum = latest.round;
 
-    const ordered = [...r1Data].sort((a, b) => b.roundMoney - a.roundMoney);
+    // Build ordered array from latest round scores + player info
+    const ordered = SEASON.players.map(p => {
+      const s = latest.scores[p.id];
+      return {
+        playerId:   p.id,
+        player:     p.name,
+        short:      p.short,
+        roundMoney: s.roundMoney,
+        total:      s.gross,
+        net:        s.net,
+        holeWins:   s.holeWins,
+        holeLosses: s.holeLosses,
+        holeHalves: s.holeHalves,
+        birdies:    s.birdies,
+        wolfWins:   s.wolfWins,
+        wolfLosses: s.wolfLosses,
+      };
+    }).sort((a, b) => b.roundMoney - a.roundMoney);
 
+    // ── Header ─────────────────────────────────────────────
+    document.getElementById("headerTitle").textContent = `Round ${roundNum}`;
+    document.getElementById("chartLabel").textContent  = `Round ${roundNum} $`;
+    document.getElementById("pageNote").textContent    = `Ranked by Round $ · Season ${SEASON.config.season}`;
+
+    // ── Helpers ────────────────────────────────────────────
     function moneyClass(v) { return v > 0 ? "money-pos" : v < 0 ? "money-neg" : "money-eve"; }
     function moneyText(v)  { return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0"; }
 
@@ -420,12 +438,13 @@
       requestAnimationFrame(step);
     }
 
+    // ── Totals bar ─────────────────────────────────────────
     function buildTotals() {
       document.getElementById("seasonTotals").innerHTML = ordered.map(p => `
         <a class="total-stat" href="https://season0.pro/members/players/${p.playerId}/">
           <span class="total-stat__value ${p.roundMoney > 0 ? 'pos' : p.roundMoney < 0 ? 'neg' : ''}"
                 data-target="${p.roundMoney}">$0</span>
-          <span class="total-stat__label">${p.player.split(' ')[0]}</span>
+          <span class="total-stat__label">${p.short}</span>
           <span class="total-stat__arrow">→</span>
         </a>
       `).join("");
@@ -437,6 +456,7 @@
       }, 400);
     }
 
+    // ── Scorecard table ────────────────────────────────────
     document.getElementById("roundTable").innerHTML = ordered.map((p, i) => `
       <tr>
         <td>
@@ -458,12 +478,13 @@
       </tr>
     `).join("");
 
+    // ── Chart ──────────────────────────────────────────────
     new Chart(document.getElementById("roundChart"), {
       type: "bar",
       data: {
-        labels: ordered.map(p => p.player.split(' ')[0]),
+        labels: ordered.map(p => p.short),
         datasets: [{
-          label: "Round $",
+          label: `Round ${roundNum} $`,
           data: ordered.map(p => p.roundMoney),
           backgroundColor: ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
           borderColor:     ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
@@ -492,12 +513,12 @@
       }
     });
 
+    // ── Scroll reveal ──────────────────────────────────────
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
       });
     }, { threshold: 0.08 });
-
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
     buildTotals();
