@@ -15,16 +15,30 @@
       --ink:         #080e0b;
       --surface:     rgba(8,16,12,0.88);
       --gold:        #c9a84c;
+      --gold-rgb:    201,168,76;
       --gold-border: rgba(201,168,76,0.24);
       --gold-rule:   rgba(201,168,76,0.10);
       --cream:       #f0ebe0;
+      --cream-rgb:   240,235,224;
       --cream-dim:   rgba(240,235,224,0.50);
       --green-glow:  rgba(18,42,26,0.65);
       --pos:         #7ecf9e;
+      --pos-rgb:     126,207,158;
       --neg:         #d97b7b;
+      --neg-rgb:     217,123,123;
       --font-display:'Playfair Display', Georgia, serif;
       --font-body:   'Libre Baskerville', Georgia, serif;
       --ease:        cubic-bezier(0.22,1,0.36,1);
+
+      /* Chart tokens — referenced in JS via getComputedStyle */
+      --chart-gold-fill:   rgba(201,168,76,0.20);
+      --chart-gold-border: rgba(201,168,76,0.85);
+      --chart-neg-fill:    rgba(217,123,123,0.20);
+      --chart-neg-border:  rgba(217,123,123,0.85);
+      --chart-tick:        rgba(240,235,224,0.50);
+      --chart-grid:        rgba(201,168,76,0.05);
+      --chart-tooltip-bg:  rgba(8,14,11,0.96);
+      --chart-tooltip-border: rgba(201,168,76,0.32);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,41 +53,32 @@
 
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
       background: radial-gradient(ellipse 80% 50% at 50% 0%, var(--green-glow) 0%, transparent 65%);
     }
 
     body::after {
       content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 100;
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 100;
       opacity: 0.030;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       background-size: 200px 200px;
     }
 
     .rule-top {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 1px;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 1px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
       z-index: 10;
     }
 
     .back {
-      position: fixed;
-      top: 16px; left: 20px;
+      position: fixed; top: 16px; left: 20px;
       z-index: 50;
       color: rgba(201,168,76,0.45);
-      font-size: 20px;
-      text-decoration: none;
-      line-height: 1;
+      font-size: 20px; text-decoration: none; line-height: 1;
       transition: color 0.2s ease;
     }
     .back:hover { color: var(--gold); }
@@ -84,15 +89,13 @@
     }
 
     .reveal {
-      opacity: 0;
-      transform: translateY(20px);
+      opacity: 0; transform: translateY(20px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     .wrap {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       width: min(1100px, 92vw);
       margin: 0 auto;
       padding: 64px 0 90px;
@@ -100,402 +103,268 @@
 
     /* ── Header ── */
     .header {
-      text-align: center;
-      margin-bottom: 48px;
+      text-align: center; margin-bottom: 48px;
       animation: fadeUp 0.8s var(--ease) 0.1s both;
     }
-
     .header::after {
-      content: '';
-      display: block;
-      width: 36px;
-      height: 1px;
+      content: ''; display: block;
+      width: 36px; height: 1px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
       margin: 22px auto 0;
     }
-
     .header__kicker {
-      display: block;
-      font-size: 9px;
-      letter-spacing: 0.42em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 12px;
+      display: block; font-size: 9px;
+      letter-spacing: 0.42em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
     }
-
     .header__title {
       font-family: var(--font-display);
       font-size: clamp(52px, 9vw, 96px);
-      font-weight: 400;
-      font-style: italic;
-      letter-spacing: -0.01em;
-      color: var(--cream);
-      margin: 0 0 8px;
-      line-height: 0.92;
+      font-weight: 400; font-style: italic;
+      letter-spacing: -0.01em; color: var(--cream);
+      margin: 0 0 8px; line-height: 0.92;
     }
-
     .header__sub {
-      font-size: 9px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--cream-dim);
+      font-size: 9px; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--cream-dim);
     }
 
-    /* ── Season standings bar ── */
+    /* ── Standings bar ── */
     .standings {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--gold-border);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--gold-border);
       border: 1px solid var(--gold-border);
       margin-bottom: 28px;
       animation: fadeUp 0.8s var(--ease) 0.18s both;
     }
-
     .standing-stat {
       background: var(--ink);
       padding: clamp(16px,3vw,28px) clamp(10px,2vw,20px);
-      text-align: center;
-      text-decoration: none;
-      display: block;
+      text-align: center; text-decoration: none; display: block;
       transition: background 0.25s ease;
     }
-
-    .standing-stat:hover { background: rgba(201,168,76,0.08); }
-
+    .standing-stat:hover { background: rgba(var(--gold-rgb),0.08); }
     .standing-stat__rank {
-      display: block;
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 11px;
-      color: rgba(201,168,76,0.45);
-      margin-bottom: 4px;
+      display: block; font-family: var(--font-display);
+      font-style: italic; font-size: 11px;
+      color: rgba(var(--gold-rgb),0.45); margin-bottom: 4px;
     }
-
     .standing-stat__value {
-      display: block;
-      font-family: var(--font-display);
-      font-size: clamp(26px,4.5vw,44px);
-      font-weight: 400;
-      line-height: 1;
-      color: var(--cream);
+      display: block; font-family: var(--font-display);
+      font-size: clamp(26px,4.5vw,44px); font-weight: 400;
+      line-height: 1; color: var(--cream);
       transition: transform 0.2s ease;
     }
-
     .standing-stat:hover .standing-stat__value { transform: scale(1.04); }
     .standing-stat__value.pos { color: var(--pos); }
     .standing-stat__value.neg { color: var(--neg); }
-
     .standing-stat__name {
-      display: block;
-      margin-top: 6px;
-      font-size: 8px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: rgba(201,168,76,0.60);
+      display: block; margin-top: 6px; font-size: 8px;
+      letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.60);
     }
-
     .standing-stat__bankroll {
-      display: block;
-      margin-top: 4px;
-      font-size: 8px;
-      letter-spacing: 0.12em;
-      color: rgba(240,235,224,0.28);
+      display: block; margin-top: 4px; font-size: 8px;
+      letter-spacing: 0.12em; color: rgba(var(--cream-rgb),0.28);
     }
-
     .standing-stat__arrow {
-      display: block;
-      margin-top: 6px;
-      font-size: 9px;
-      color: rgba(201,168,76,0);
-      transition: color 0.2s ease;
+      display: block; margin-top: 6px; font-size: 9px;
+      color: rgba(var(--gold-rgb),0); transition: color 0.2s ease;
     }
+    .standing-stat:hover .standing-stat__arrow { color: rgba(var(--gold-rgb),0.55); }
 
-    .standing-stat:hover .standing-stat__arrow { color: rgba(201,168,76,0.55); }
-
-    /* ── Latest round card ── */
+    /* ── Card ── */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--gold-border);
-      padding: clamp(20px,4vw,34px);
-      margin-bottom: 18px;
-      backdrop-filter: blur(14px);
-      position: relative;
-      overflow: hidden;
+      background: var(--surface); border: 1px solid var(--gold-border);
+      padding: clamp(20px,4vw,34px); margin-bottom: 18px;
+      backdrop-filter: blur(14px); position: relative; overflow: hidden;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 16px 48px rgba(0,0,0,0.4);
     }
-
     .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
+      content: ''; position: absolute; top: 0; left: 0;
       width: 32px; height: 32px;
-      border-top: 1px solid rgba(201,168,76,0.40);
-      border-left: 1px solid rgba(201,168,76,0.40);
+      border-top: 1px solid rgba(var(--gold-rgb),0.40);
+      border-left: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
     }
-
     .card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; right: 0;
+      content: ''; position: absolute; bottom: 0; right: 0;
       width: 32px; height: 32px;
-      border-bottom: 1px solid rgba(201,168,76,0.40);
-      border-right: 1px solid rgba(201,168,76,0.40);
+      border-bottom: 1px solid rgba(var(--gold-rgb),0.40);
+      border-right: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
     }
+    .card:hover::before,
+    .card:hover::after { width: 48px; height: 48px; }
 
     .card__label {
-      font-size: 9px;
-      letter-spacing: 0.34em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin: 0 0 18px;
+      font-size: 9px; letter-spacing: 0.34em;
+      text-transform: uppercase; color: var(--gold); margin: 0 0 18px;
     }
-
     canvas { max-height: 270px; }
 
-    /* ── Round result compact ── */
+    /* ── Round result ── */
     .round-result {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 1px;
-      background: var(--gold-border);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--gold-border);
       border: 1px solid var(--gold-border);
     }
-
     .round-result__player {
-      background: var(--ink);
-      padding: 16px 12px;
-      text-align: center;
+      background: var(--ink); padding: 16px 12px; text-align: center;
     }
-
     .round-result__name {
-      display: block;
-      font-size: 8px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(201,168,76,0.55);
-      margin-bottom: 6px;
+      display: block; font-size: 8px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(var(--gold-rgb),0.55); margin-bottom: 6px;
     }
-
     .round-result__money {
-      display: block;
-      font-family: var(--font-display);
-      font-size: clamp(18px,3vw,28px);
-      font-weight: 400;
-      line-height: 1;
+      display: block; font-family: var(--font-display);
+      font-size: clamp(18px,3vw,28px); font-weight: 400; line-height: 1;
     }
-
     .round-result__money.pos { color: var(--pos); }
     .round-result__money.neg { color: var(--neg); }
     .round-result__money.eve { color: var(--cream-dim); }
-
     .round-result__sub {
-      display: block;
-      margin-top: 4px;
-      font-size: 8px;
-      color: rgba(240,235,224,0.28);
-      letter-spacing: 0.10em;
+      display: block; margin-top: 4px; font-size: 8px;
+      color: rgba(var(--cream-rgb),0.28); letter-spacing: 0.10em;
     }
 
-    /* ── Navigation row ── */
+    /* ── Nav row ── */
     .nav-row {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 12px;
-      margin-bottom: 18px;
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 12px; margin-bottom: 18px;
       animation: fadeUp 0.8s var(--ease) 0.30s both;
     }
-
     .nav-card {
-      background: var(--surface);
-      border: 1px solid var(--gold-border);
-      padding: 24px 20px;
-      text-decoration: none;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      background: var(--surface); border: 1px solid var(--gold-border);
+      padding: 24px 20px; text-decoration: none; text-align: center;
+      position: relative; overflow: hidden;
       transition: background 0.25s ease, border-color 0.25s ease;
       backdrop-filter: blur(14px);
     }
-
     .nav-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
+      content: ''; position: absolute; top: 0; left: 0;
       width: 24px; height: 24px;
-      border-top: 1px solid rgba(201,168,76,0.40);
-      border-left: 1px solid rgba(201,168,76,0.40);
+      border-top: 1px solid rgba(var(--gold-rgb),0.40);
+      border-left: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
     }
-
     .nav-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; right: 0;
+      content: ''; position: absolute; bottom: 0; right: 0;
       width: 24px; height: 24px;
-      border-bottom: 1px solid rgba(201,168,76,0.40);
-      border-right: 1px solid rgba(201,168,76,0.40);
+      border-bottom: 1px solid rgba(var(--gold-rgb),0.40);
+      border-right: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
     }
-
     .nav-card:hover {
-      background: rgba(201,168,76,0.06);
-      border-color: rgba(201,168,76,0.45);
+      background: rgba(var(--gold-rgb),0.06);
+      border-color: rgba(var(--gold-rgb),0.45);
     }
-
-    .nav-card__icon {
-      display: block;
-      font-size: 22px;
-      margin-bottom: 10px;
-      opacity: 0.7;
-    }
-
+    .nav-card:hover::before,
+    .nav-card:hover::after { width: 40px; height: 40px; }
+    .nav-card__icon { display: block; font-size: 22px; margin-bottom: 10px; opacity: 0.7; }
     .nav-card__title {
-      display: block;
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--cream);
-      margin-bottom: 4px;
-      transition: color 0.2s ease;
+      display: block; font-family: var(--font-display);
+      font-style: italic; font-size: 18px; font-weight: 400;
+      color: var(--cream); margin-bottom: 4px; transition: color 0.2s ease;
     }
-
     .nav-card:hover .nav-card__title { color: var(--gold); }
-
     .nav-card__sub {
-      display: block;
-      font-size: 8px;
-      letter-spacing: 0.20em;
-      text-transform: uppercase;
-      color: rgba(201,168,76,0.45);
+      display: block; font-size: 8px; letter-spacing: 0.20em;
+      text-transform: uppercase; color: rgba(var(--gold-rgb),0.45);
     }
-
     .nav-card__arrow {
-      display: block;
-      margin-top: 12px;
-      font-size: 14px;
-      color: rgba(201,168,76,0);
+      display: block; margin-top: 12px; font-size: 14px;
+      color: rgba(var(--gold-rgb),0);
       transition: color 0.2s ease, transform 0.2s ease;
     }
+    .nav-card:hover .nav-card__arrow { color: var(--gold); transform: translateX(4px); }
 
-    .nav-card:hover .nav-card__arrow {
-      color: var(--gold);
-      transform: translateX(4px);
-    }
-
-    /* ── Scorecard table ── */
+    /* ── Scores table ── */
     .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
     .scores-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 660px;
-      font-family: var(--font-body);
+      width: 100%; border-collapse: collapse;
+      min-width: 660px; font-family: var(--font-body);
     }
-
-    .scores-table thead tr { border-bottom: 1px solid rgba(201,168,76,0.32); }
-
+    .scores-table thead tr { border-bottom: 1px solid rgba(var(--gold-rgb),0.32); }
     .scores-table th {
-      padding: 10px 12px;
-      text-align: left;
-      color: var(--gold);
-      font-size: 8px;
-      font-weight: 400;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      white-space: nowrap;
+      padding: 10px 12px; text-align: left;
+      color: var(--gold); font-size: 8px; font-weight: 400;
+      letter-spacing: 0.26em; text-transform: uppercase; white-space: nowrap;
     }
-
     .scores-table td {
-      padding: 14px 12px;
-      color: var(--cream);
-      font-size: 13px;
-      border-bottom: 1px solid var(--gold-rule);
+      padding: 14px 12px; color: var(--cream);
+      font-size: 13px; border-bottom: 1px solid var(--gold-rule);
       white-space: nowrap;
+      /* ── Gold left-border reveal on hover ── */
+      border-left: 2px solid transparent;
+      transition: background 0.2s ease, border-left-color 0.2s ease;
+    }
+    .scores-table tbody tr:last-child td { border-bottom: none; }
+    .scores-table tbody tr:hover td {
+      background: rgba(var(--gold-rgb),0.04);
+    }
+    .scores-table tbody tr:hover td:first-child {
+      border-left-color: var(--gold);
     }
 
-    .scores-table tbody tr:last-child td { border-bottom: none; }
-    .scores-table tbody tr { transition: background 0.2s ease; }
-    .scores-table tbody tr:hover { background: rgba(201,168,76,0.04); }
+    /* Sticky thead */
+    .scores-table thead {
+      position: sticky; top: 0; z-index: 2;
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+    }
 
     .rank {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center;
       width: 20px; height: 20px;
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 11px;
-      color: rgba(201,168,76,0.60);
-      border: 1px solid rgba(201,168,76,0.18);
-      margin-right: 10px;
+      font-family: var(--font-display); font-style: italic; font-size: 11px;
+      color: rgba(var(--gold-rgb),0.60);
+      border: 1px solid rgba(var(--gold-rgb),0.18); margin-right: 10px;
     }
-
     .rank-1 {
       color: var(--gold);
-      border-color: rgba(201,168,76,0.50);
-      background: rgba(201,168,76,0.08);
+      border-color: rgba(var(--gold-rgb),0.50);
+      background: rgba(var(--gold-rgb),0.08);
     }
-
-    .player-link {
-      text-decoration: none;
-      color: inherit;
-    }
+    .player-link { text-decoration: none; color: inherit; }
     .player-link:hover .player-name { color: var(--gold); }
-    .player-link:hover .player-id   { color: rgba(201,168,76,0.80); }
-
+    .player-link:hover .player-id   { color: rgba(var(--gold-rgb),0.80); }
     .player-name {
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      transition: color 0.2s ease;
+      font-family: var(--font-display); font-size: 15px;
+      font-weight: 400; letter-spacing: 0.02em; transition: color 0.2s ease;
     }
-
     .player-id {
-      margin-left: 6px;
-      color: rgba(201,168,76,0.50);
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      transition: color 0.2s ease;
+      margin-left: 6px; color: rgba(var(--gold-rgb),0.50);
+      font-size: 9px; letter-spacing: 0.14em; transition: color 0.2s ease;
     }
-
     .money-pos { color: var(--pos); }
     .money-neg { color: var(--neg); }
     .money-eve { color: var(--cream-dim); }
 
     .page-note {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 9px;
-      letter-spacing: 0.20em;
-      text-transform: uppercase;
-      color: rgba(201,168,76,0.35);
+      text-align: center; margin-top: 20px; font-size: 9px;
+      letter-spacing: 0.20em; text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.35);
     }
 
-    /* ── Season recap badge (R6 only) ── */
     .recap-badge {
-      display: none;
-      text-align: center;
-      padding: 12px;
-      border: 1px solid var(--gold-border);
-      margin-bottom: 18px;
-      font-size: 9px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-decoration: none;
-      transition: background 0.2s ease;
+      display: none; text-align: center; padding: 12px;
+      border: 1px solid var(--gold-border); margin-bottom: 18px;
+      font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none; transition: background 0.2s ease;
     }
-    .recap-badge:hover { background: rgba(201,168,76,0.06); }
+    .recap-badge:hover { background: rgba(var(--gold-rgb),0.06); }
     .recap-badge.visible { display: block; }
 
     @media (max-width: 600px) {
-      .wrap        { padding: 32px 0 60px; }
+      .wrap          { padding: 32px 0 60px; }
       .header__title { font-size: 56px; }
-      .standings   { grid-template-columns: repeat(2,1fr); }
-      .round-result { grid-template-columns: repeat(2,1fr); }
-      .nav-row     { grid-template-columns: 1fr; }
-      .card        { padding: 18px 14px; }
+      .standings     { grid-template-columns: repeat(2,1fr); }
+      .round-result  { grid-template-columns: repeat(2,1fr); }
+      .nav-row       { grid-template-columns: 1fr; }
+      .card          { padding: 18px 14px; }
+      .scores-table td { padding: 10px 8px; font-size: 12px; }
+      .scores-table th { padding: 8px 8px; font-size: 7px; }
     }
   </style>
 </head>
@@ -512,10 +381,8 @@
       <span class="header__sub" id="headerSub">Season Standings</span>
     </header>
 
-    <!-- Season standings bar — cumulative $ -->
     <div class="standings" id="seasonStandings"></div>
 
-    <!-- Navigation row -->
     <nav class="nav-row">
       <a class="nav-card" href="https://season0.pro/members/scorecards/">
         <span class="nav-card__icon">⛳</span>
@@ -537,24 +404,20 @@
       </a>
     </nav>
 
-    <!-- Season Recap — only shows at R6 -->
     <a class="recap-badge" id="recapBadge" href="https://season0.pro/members/recap/">
       ★ Season Complete · View Final Recap →
     </a>
 
-    <!-- Latest round summary -->
     <section class="card reveal">
       <p class="card__label" id="roundLabel">Latest Round</p>
       <div class="round-result" id="roundResult"></div>
     </section>
 
-    <!-- Chart -->
     <section class="card reveal">
       <p class="card__label" id="chartLabel">Round $</p>
       <canvas id="roundChart"></canvas>
     </section>
 
-    <!-- Full scorecard -->
     <section class="card reveal">
       <p class="card__label" id="scorecardLabel">Full Scorecard</p>
       <div class="table-wrap">
@@ -587,9 +450,8 @@
     const roundNum = latest.round;
     const rPlayed  = SEASON.roundsPlayed;
 
-    // Build ordered array from latest round
     const ordered = SEASON.players.map(p => {
-      const s = latest.scores[p.id];
+      const s  = latest.scores[p.id];
       const st = SEASON.standings.find(x => x.id === p.id);
       return {
         playerId:   p.id,
@@ -610,8 +472,23 @@
       };
     }).sort((a, b) => b.roundMoney - a.roundMoney);
 
-    // Standings sorted by cumMoney
     const byStanding = [...ordered].sort((a,b) => b.cumMoney - a.cumMoney);
+
+    // ── Pull CSS tokens for Chart.js ──────────────────────
+    const cssVar = name => getComputedStyle(document.documentElement)
+      .getPropertyValue(name).trim();
+
+    const C = {
+      goldFill:      cssVar('--chart-gold-fill'),
+      goldBorder:    cssVar('--chart-gold-border'),
+      negFill:       cssVar('--chart-neg-fill'),
+      negBorder:     cssVar('--chart-neg-border'),
+      tick:          cssVar('--chart-tick'),
+      grid:          cssVar('--chart-grid'),
+      tooltipBg:     cssVar('--chart-tooltip-bg'),
+      tooltipBorder: cssVar('--chart-tooltip-border'),
+      font:          `'Libre Baskerville', Georgia, serif`,
+    };
 
     function moneyClass(v) { return v > 0 ? "money-pos" : v < 0 ? "money-neg" : "money-eve"; }
     function moneyText(v)  { return v > 0 ? "+$" + v : v < 0 ? "-$" + Math.abs(v) : "$0"; }
@@ -634,18 +511,16 @@
     // ── Header ────────────────────────────────────────────
     document.getElementById("headerSub").textContent =
       `After Round ${roundNum} · ${rPlayed} of ${SEASON.config.rounds} played`;
-    document.getElementById("roundLabel").textContent      = `Round ${roundNum} Results`;
-    document.getElementById("chartLabel").textContent      = `Round ${roundNum} $`;
-    document.getElementById("scorecardLabel").textContent  = `Round ${roundNum} · Full Scorecard`;
-    document.getElementById("pageNote").textContent        =
-      `Ranked by Round ${roundNum} $ · Season 0`;
+    document.getElementById("roundLabel").textContent     = `Round ${roundNum} Results`;
+    document.getElementById("chartLabel").textContent     = `Round ${roundNum} $`;
+    document.getElementById("scorecardLabel").textContent = `Round ${roundNum} · Full Scorecard`;
+    document.getElementById("pageNote").textContent       = `Ranked by Round ${roundNum} $ · Season 0`;
 
-    // ── Season Recap badge (R6 only) ──────────────────────
     if (rPlayed >= SEASON.config.rounds) {
       document.getElementById("recapBadge").classList.add("visible");
     }
 
-    // ── Season standings bar ──────────────────────────────
+    // ── Standings bar ─────────────────────────────────────
     document.getElementById("seasonStandings").innerHTML = byStanding.map(p => `
       <a class="standing-stat" href="https://season0.pro/members/players/${p.playerId}/">
         <span class="standing-stat__rank">#${p.rank}</span>
@@ -663,7 +538,7 @@
       });
     }, 300);
 
-    // ── Round result compact ──────────────────────────────
+    // ── Round result ──────────────────────────────────────
     document.getElementById("roundResult").innerHTML = ordered.map(p => `
       <div class="round-result__player">
         <span class="round-result__name">${p.short}</span>
@@ -694,35 +569,56 @@
       </tr>
     `).join("");
 
-    // ── Chart ─────────────────────────────────────────────
+    // ── Chart — all colors from CSS tokens ───────────────
     new Chart(document.getElementById("roundChart"), {
       type: "bar",
       data: {
         labels: ordered.map(p => p.short),
         datasets: [{
           label: `Round ${roundNum} $`,
-          data: ordered.map(p => p.roundMoney),
-          backgroundColor: ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.20)" : "rgba(217,123,123,0.20)"),
-          borderColor:     ordered.map(p => p.roundMoney >= 0 ? "rgba(201,168,76,0.85)" : "rgba(217,123,123,0.85)"),
-          borderWidth: 1, borderRadius: 2
+          data:            ordered.map(p => p.roundMoney),
+          backgroundColor: ordered.map(p => p.roundMoney >= 0 ? C.goldFill  : C.negFill),
+          borderColor:     ordered.map(p => p.roundMoney >= 0 ? C.goldBorder : C.negBorder),
+          borderWidth: 1, borderRadius: 2,
         }]
       },
       options: {
         responsive: true,
         animation: { duration: 1000, easing: 'easeOutQuart' },
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor:  C.tooltipBg,
+            borderColor:      C.tooltipBorder,
+            borderWidth:      1,
+            titleColor:       cssVar('--gold'),
+            bodyColor:        cssVar('--cream'),
+            padding:          12,
+            cornerRadius:     2,
+            titleFont:        { family: C.font, size: 10 },
+            bodyFont:         { family: C.font, size: 11 },
+            callbacks: {
+              label: ctx => {
+                const v = ctx.parsed.y;
+                return ` ${v >= 0 ? '+$' : '-$'}${Math.abs(v)}`;
+              }
+            }
+          }
+        },
         scales: {
           x: {
-            ticks: { color: "rgba(240,235,224,0.50)", font: { family: "'Libre Baskerville',Georgia,serif", size: 11 } },
-            grid:  { color: "rgba(201,168,76,0.05)" }
+            ticks: { color: C.tick, font: { family: C.font, size: 11 } },
+            grid:  { color: C.grid },
+            border: { color: 'transparent' }
           },
           y: {
             ticks: {
-              color: "rgba(240,235,224,0.50)",
-              font:  { family: "'Libre Baskerville',Georgia,serif", size: 10 },
-              callback: v => (v >= 0 ? "+$" : "-$") + Math.abs(v)
+              color: C.tick,
+              font:  { family: C.font, size: 10 },
+              callback: v => (v >= 0 ? '+$' : '-$') + Math.abs(v)
             },
-            grid: { color: "rgba(201,168,76,0.05)" }
+            grid:   { color: C.grid },
+            border: { color: 'transparent' }
           }
         }
       }
