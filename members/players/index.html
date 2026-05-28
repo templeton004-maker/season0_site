@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Season 0 — Players</title>
+  <script src="/members/data.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:         #080e0b;
+      --surface:     rgba(8,16,12,0.88);
+      --gold:        #c9a84c;
+      --gold-rgb:    201,168,76;
+      --gold-border: rgba(201,168,76,0.24);
+      --gold-rule:   rgba(201,168,76,0.10);
+      --cream:       #f0ebe0;
+      --cream-rgb:   240,235,224;
+      --cream-dim:   rgba(240,235,224,0.50);
+      --green-glow:  rgba(18,42,26,0.65);
+      --pos:         #7ecf9e;
+      --neg:         #d97b7b;
+      --font-display:'Playfair Display', Georgia, serif;
+      --font-body:   'Libre Baskerville', Georgia, serif;
+      --ease:        cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--cream);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, var(--green-glow) 0%, transparent 65%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 100;
+      opacity: 0.030;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    .rule-top {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 10;
+    }
+
+    .back {
+      position: fixed; top: 16px; left: 20px;
+      z-index: 50; color: rgba(201,168,76,0.45);
+      font-size: 20px; text-decoration: none; line-height: 1;
+      transition: color 0.2s ease;
+    }
+    .back:hover { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .wrap {
+      position: relative; z-index: 1;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 64px 0 90px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center; margin-bottom: 48px;
+      animation: fadeUp 0.8s var(--ease) 0.1s both;
+    }
+    .header::after {
+      content: ''; display: block;
+      width: 36px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 22px auto 0;
+    }
+    .header__kicker {
+      display: block; font-size: 9px;
+      letter-spacing: 0.42em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .header__title {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 400; font-style: italic;
+      letter-spacing: -0.01em; color: var(--cream);
+      margin: 0 0 8px; line-height: 0.92;
+    }
+    .header__sub {
+      font-size: 9px; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--cream-dim);
+    }
+
+    /* ── Player grid ── */
+    .player-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    /* ── Player card ── */
+    .player-card {
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 16px 48px rgba(0,0,0,0.4);
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+
+    .player-card:hover {
+      background: rgba(var(--gold-rgb),0.05);
+      border-color: rgba(var(--gold-rgb),0.45);
+    }
+
+    .player-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 28px; height: 28px;
+      border-top: 1px solid rgba(var(--gold-rgb),0.40);
+      border-left: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
+    }
+    .player-card::after {
+      content: ''; position: absolute; bottom: 0; right: 0;
+      width: 28px; height: 28px;
+      border-bottom: 1px solid rgba(var(--gold-rgb),0.40);
+      border-right: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
+    }
+    .player-card:hover::before,
+    .player-card:hover::after { width: 44px; height: 44px; }
+
+    /* ── Card inner ── */
+    .player-card__inner {
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .player-card__left { flex: 1; }
+
+    .player-card__rank {
+      display: block;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 11px;
+      color: rgba(var(--gold-rgb),0.45);
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+    }
+
+    .player-card__name {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 0.95;
+      transition: color 0.2s ease;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .player-card:hover .player-card__name { color: var(--gold); }
+
+    .player-card__meta {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .player-card__id {
+      font-size: 8px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.50);
+    }
+
+    .player-card__hdcp {
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      color: rgba(var(--cream-rgb),0.35);
+    }
+
+    /* ── Stats right side ── */
+    .player-card__stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .player-card__money {
+      font-family: var(--font-display);
+      font-size: clamp(24px, 3.5vw, 36px);
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .player-card__money.pos { color: var(--pos); }
+    .player-card__money.neg { color: var(--neg); }
+    .player-card__money.eve { color: var(--cream-dim); }
+
+    .player-card__bankroll {
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      color: rgba(var(--cream-rgb),0.28);
+      text-align: right;
+    }
+
+    .player-card__wolf {
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      color: rgba(var(--gold-rgb),0.45);
+      text-align: right;
+    }
+
+    /* ── Divider ── */
+    .player-card__divider {
+      height: 1px;
+      background: var(--gold-rule);
+      margin: 0 32px;
+    }
+
+    /* ── Bottom stat strip ── */
+    .player-card__strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--gold-rule);
+    }
+
+    .strip-stat {
+      background: var(--ink);
+      padding: 12px 8px;
+      text-align: center;
+      transition: background 0.2s ease;
+    }
+
+    .player-card:hover .strip-stat { background: rgba(var(--gold-rgb),0.03); }
+
+    .strip-stat__value {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    .strip-stat__label {
+      display: block;
+      margin-top: 3px;
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.40);
+    }
+
+    /* ── Arrow ── */
+    .player-card__arrow {
+      position: absolute;
+      bottom: 14px;
+      right: 32px;
+      font-size: 14px;
+      color: rgba(var(--gold-rgb),0);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .player-card:hover .player-card__arrow {
+      color: var(--gold);
+      transform: translateX(4px);
+    }
+
+    .page-note {
+      text-align: center; margin-top: 28px;
+      font-size: 9px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.35);
+    }
+
+    @media (max-width: 640px) {
+      .player-grid { grid-template-columns: 1fr; }
+      .player-card__inner { padding: 20px; }
+      .player-card__strip { grid-template-columns: repeat(4,1fr); }
+      .player-card__divider { margin: 0 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rule-top"></div>
+  <a class="back" href="https://season0.pro/members/">←</a>
+
+  <main class="wrap">
+
+    <header class="header">
+      <span class="header__kicker">Season 0 · Members</span>
+      <h1 class="header__title">Players</h1>
+      <span class="header__sub" id="headerSub">Season Standings</span>
+    </header>
+
+    <div class="player-grid" id="playerGrid"></div>
+
+    <p class="page-note" id="pageNote"></p>
+
+  </main>
+
+  <script>
+    const rPlayed = SEASON.roundsPlayed;
+
+    function moneyText(v) { return v > 0 ? `+$${v}` : v < 0 ? `-$${Math.abs(v)}` : '$0'; }
+    function moneyClass(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : 'eve'; }
+    function fmt(v) { return v.toLocaleString(); }
+
+    // Sort by rank (cumPts)
+    const sorted = [...SEASON.standings].sort((a,b) => a.rank - b.rank);
+
+    document.getElementById("playerGrid").innerHTML = sorted.map((p, idx) => {
+      const totals = SEASON.playerTotals(p.id);
+      const wolfRecord = `${totals.wolfWins}W · ${totals.wolfLosses}L`;
+
+      // Per round stats
+      const avgGross = totals.avgGross;
+      const avgNet   = totals.avgNet;
+      const birdies  = totals.totalBirdies;
+      const eagles   = totals.totalEagles;
+
+      return `
+        <a class="player-card reveal"
+           href="https://season0.pro/members/players/${p.id}/"
+           style="animation-delay: ${idx * 0.08}s">
+
+          <div class="player-card__inner">
+            <div class="player-card__left">
+              <span class="player-card__rank">#${p.rank} Season Rank</span>
+              <span class="player-card__name">${p.name}</span>
+              <div class="player-card__meta">
+                <span class="player-card__id">${p.id}</span>
+                <span class="player-card__hdcp">HDCP ${p.hdcp}</span>
+              </div>
+            </div>
+            <div class="player-card__stats">
+              <span class="player-card__money ${moneyClass(p.cumMoney)}">${moneyText(p.cumMoney)}</span>
+              <span class="player-card__bankroll">$${fmt(p.bankroll)} bankroll</span>
+              <span class="player-card__wolf">Wolf ${wolfRecord}</span>
+            </div>
+          </div>
+
+          <div class="player-card__divider"></div>
+
+          <div class="player-card__strip">
+            <div class="strip-stat">
+              <span class="strip-stat__value">${avgGross}</span>
+              <span class="strip-stat__label">Avg Gross</span>
+            </div>
+            <div class="strip-stat">
+              <span class="strip-stat__value">${avgNet}</span>
+              <span class="strip-stat__label">Avg Net</span>
+            </div>
+            <div class="strip-stat">
+              <span class="strip-stat__value">${birdies}</span>
+              <span class="strip-stat__label">Birdies</span>
+            </div>
+            <div class="strip-stat">
+              <span class="strip-stat__value">${eagles || '—'}</span>
+              <span class="strip-stat__label">Eagles</span>
+            </div>
+          </div>
+
+          <span class="player-card__arrow">→</span>
+        </a>
+      `;
+    }).join('');
+
+    document.getElementById("headerSub").textContent =
+      `${rPlayed} Round${rPlayed !== 1 ? 's' : ''} Played · 4 Players`;
+    document.getElementById("pageNote").textContent =
+      `Season 0 · Ranked by cumulative pts through Round ${rPlayed}`;
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
