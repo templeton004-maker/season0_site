@@ -48,35 +48,23 @@ const SEASON = {
       }
     },
     // ── Paste R2 block here after May 31 round ──
-    // {
-    //   round: 2,
-    //   date: "",
-    //   course: "Fields Ranch West",
-    //   scores: {
-    //     KS: { ... },
-    //     MJ: { ... },
-    //     WT: { ... },
-    //     JT: { ... },
-    //   }
-    // },
   ],
 
   // ── Pairings ──────────────────────────────────────────────
-  // Season-long pairing stats. Update after each round.
+  // Updated from Pairings_Data sheet after R1
   pairings: [
-    { id: "JT.KS", p1: "JT", p2: "KS", seasonHoles: 0, seasonWins: 0, seasonLosses: 0, seasonHalves: 0, seasonPts: 0 },
-    { id: "JT.MJ", p1: "JT", p2: "MJ", seasonHoles: 0, seasonWins: 0, seasonLosses: 0, seasonHalves: 0, seasonPts: 0 },
-    { id: "JT.WT", p1: "JT", p2: "WT", seasonHoles: 0, seasonWins: 0, seasonLosses: 0, seasonHalves: 0, seasonPts: 0 },
-    { id: "KS.MJ", p1: "KS", p2: "MJ", seasonHoles: 0, seasonWins: 0, seasonLosses: 0, seasonHalves: 0, seasonPts: 0 },
-    { id: "KS.WT", p1: "KS", p2: "WT", seasonHoles: 0, seasonWins: 0, seasonLosses: 0, seasonHalves: 0, seasonPts: 0 },
-    { id: "MJ.WT", p1: "MJ", p2: "WT", seasonHoles: 0, seasonWins: 0, seasonLosses: 0, seasonHalves: 0, seasonPts: 0 },
+    { id: "JT.KS", p1: "JT", p2: "KS", seasonHoles: 3,  seasonWins: 1, seasonLosses: 2, seasonHalves: 0, seasonPts: -2  },
+    { id: "JT.MJ", p1: "JT", p2: "MJ", seasonHoles: 6,  seasonWins: 3, seasonLosses: 2, seasonHalves: 1, seasonPts: -16 },
+    { id: "JT.WT", p1: "JT", p2: "WT", seasonHoles: 8,  seasonWins: 1, seasonLosses: 5, seasonHalves: 2, seasonPts: -18 },
+    { id: "KS.MJ", p1: "KS", p2: "MJ", seasonHoles: 8,  seasonWins: 5, seasonLosses: 1, seasonHalves: 2, seasonPts: 18  },
+    { id: "KS.WT", p1: "KS", p2: "WT", seasonHoles: 6,  seasonWins: 2, seasonLosses: 3, seasonHalves: 1, seasonPts: 16  },
+    { id: "MJ.WT", p1: "MJ", p2: "WT", seasonHoles: 3,  seasonWins: 2, seasonLosses: 1, seasonHalves: 0, seasonPts: 2   },
   ],
 
 };
 
 // ── Derived helpers (auto-calculated — do not edit) ───────────
 
-// Season standings — sorted by cumulative pts
 SEASON.standings = SEASON.players.map(p => ({
   ...p,
   cumPts:      SEASON.rounds.reduce((s, r) => s + (r.scores[p.id]?.pts || 0), 0),
@@ -86,19 +74,15 @@ SEASON.standings = SEASON.players.map(p => ({
 })).sort((a, b) => b.cumPts - a.cumPts)
    .map((p, i) => ({ ...p, rank: i + 1 }));
 
-// Latest round played
-SEASON.latestRound = SEASON.rounds[SEASON.rounds.length - 1] || null;
+SEASON.latestRound   = SEASON.rounds[SEASON.rounds.length - 1] || null;
+SEASON.roundsPlayed  = SEASON.rounds.length;
 
-// Rounds played count
-SEASON.roundsPlayed = SEASON.rounds.length;
-
-// Per-player season totals helper
 SEASON.playerTotals = (id) => ({
-  cumPts:   SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.pts || 0), 0),
-  cumMoney: SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.roundMoney || 0), 0),
-  bankroll: SEASON.config.startingBankroll + SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.roundMoney || 0), 0),
-  avgGross: SEASON.rounds.length ? (SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.gross || 0), 0) / SEASON.rounds.length).toFixed(1) : 0,
-  avgNet:   SEASON.rounds.length ? (SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.net || 0), 0) / SEASON.rounds.length).toFixed(1) : 0,
+  cumPts:       SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.pts || 0), 0),
+  cumMoney:     SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.roundMoney || 0), 0),
+  bankroll:     SEASON.config.startingBankroll + SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.roundMoney || 0), 0),
+  avgGross:     SEASON.rounds.length ? (SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.gross || 0), 0) / SEASON.rounds.length).toFixed(1) : 0,
+  avgNet:       SEASON.rounds.length ? (SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.net || 0), 0) / SEASON.rounds.length).toFixed(1) : 0,
   totalBirdies: SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.birdies || 0), 0),
   totalEagles:  SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.eagles || 0), 0),
   wolfWins:     SEASON.rounds.reduce((s, r) => s + (r.scores[id]?.wolfWins || 0), 0),
