@@ -1,1 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Season 0 — Pairings</title>
+  <script src="/members/data.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:         #080e0b;
+      --surface:     rgba(8,16,12,0.88);
+      --gold:        #c9a84c;
+      --gold-rgb:    201,168,76;
+      --gold-border: rgba(201,168,76,0.24);
+      --gold-rule:   rgba(201,168,76,0.10);
+      --cream:       #f0ebe0;
+      --cream-rgb:   240,235,224;
+      --cream-dim:   rgba(240,235,224,0.50);
+      --green-glow:  rgba(18,42,26,0.65);
+      --pos:         #7ecf9e;
+      --neg:         #d97b7b;
+      --font-display:'Playfair Display', Georgia, serif;
+      --font-body:   'Libre Baskerville', Georgia, serif;
+      --ease:        cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--ink);
+      color: var(--cream);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, var(--green-glow) 0%, transparent 65%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 100;
+      opacity: 0.030;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    .rule-top {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      z-index: 10;
+    }
+
+    .back {
+      position: fixed; top: 16px; left: 20px;
+      z-index: 50; color: rgba(201,168,76,0.45);
+      font-size: 20px; text-decoration: none; line-height: 1;
+      transition: color 0.2s ease;
+    }
+    .back:hover { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .wrap {
+      position: relative; z-index: 1;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 64px 0 90px;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center; margin-bottom: 48px;
+      animation: fadeUp 0.8s var(--ease) 0.1s both;
+    }
+    .header::after {
+      content: ''; display: block;
+      width: 36px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 22px auto 0;
+    }
+    .header__kicker {
+      display: block; font-size: 9px;
+      letter-spacing: 0.42em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .header__title {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 400; font-style: italic;
+      letter-spacing: -0.01em; color: var(--cream);
+      margin: 0 0 8px; line-height: 0.92;
+    }
+    .header__sub {
+      font-size: 9px; letter-spacing: 0.28em;
+      text-transform: uppercase; color: var(--cream-dim);
+    }
+
+    /* ── Pairing grid ── */
+    .pairing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    /* ── Pairing card ── */
+    .pairing-card {
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      position: relative; overflow: hidden;
+      backdrop-filter: blur(14px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 16px 48px rgba(0,0,0,0.4);
+      transition: border-color 0.25s ease;
+    }
+
+    .pairing-card:hover { border-color: rgba(var(--gold-rgb),0.45); }
+
+    .pairing-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 28px; height: 28px;
+      border-top: 1px solid rgba(var(--gold-rgb),0.40);
+      border-left: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
+    }
+    .pairing-card::after {
+      content: ''; position: absolute; bottom: 0; right: 0;
+      width: 28px; height: 28px;
+      border-bottom: 1px solid rgba(var(--gold-rgb),0.40);
+      border-right: 1px solid rgba(var(--gold-rgb),0.40);
+      transition: width 0.4s var(--ease), height 0.4s var(--ease);
+    }
+    .pairing-card:hover::before,
+    .pairing-card:hover::after { width: 44px; height: 44px; }
+
+    /* ── Card header — matchup ── */
+    .matchup {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--gold-rule);
+    }
+
+    .matchup__player {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .matchup__initials {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    .matchup__name {
+      font-size: 7px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.55);
+    }
+
+    .matchup__vs {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-style: italic;
+      color: rgba(var(--gold-rgb),0.35);
+      letter-spacing: 0.10em;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── Season stats ── */
+    .season-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--gold-rule);
+    }
+
+    .season-stat {
+      background: var(--ink);
+      padding: 14px 8px;
+      text-align: center;
+    }
+
+    .season-stat__value {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    .season-stat__value.pos { color: var(--pos); }
+    .season-stat__value.neg { color: var(--neg); }
+
+    .season-stat__label {
+      display: block;
+      margin-top: 4px;
+      font-size: 7px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.45);
+    }
+
+    /* ── Expand toggle ── */
+    .expand-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      border-top: 1px solid var(--gold-rule);
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      color: rgba(var(--gold-rgb),0.45);
+      font-family: var(--font-body);
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .expand-btn:hover {
+      color: var(--gold);
+      background: rgba(var(--gold-rgb),0.04);
+    }
+
+    .expand-btn__arrow {
+      font-size: 10px;
+      transition: transform 0.3s var(--ease);
+    }
+
+    .pairing-card.expanded .expand-btn__arrow {
+      transform: rotate(180deg);
+    }
+
+    /* ── Round breakdown ── */
+    .round-breakdown {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease);
+    }
+
+    .pairing-card.expanded .round-breakdown {
+      max-height: 600px;
+    }
+
+    .round-breakdown__inner {
+      border-top: 1px solid var(--gold-rule);
+      padding: 16px 28px 20px;
+    }
+
+    .round-breakdown__title {
+      font-size: 8px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .round-row {
+      display: grid;
+      grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--gold-rule);
+      align-items: center;
+    }
+
+    .round-row:last-child { border-bottom: none; }
+
+    .round-row__label {
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(var(--cream-rgb),0.40);
+    }
+
+    .round-row__val {
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: var(--cream);
+      text-align: center;
+    }
+
+    .round-row__val.pos { color: var(--pos); }
+    .round-row__val.neg { color: var(--neg); }
+    .round-row__val.dim { color: rgba(var(--cream-rgb),0.30); font-size: 11px; }
+
+    .round-row-header {
+      display: grid;
+      grid-template-columns: 0.6fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 0 0 6px;
+      border-bottom: 1px solid rgba(var(--gold-rgb),0.15);
+      margin-bottom: 4px;
+    }
+
+    .round-row-header span {
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.45);
+      text-align: center;
+    }
+
+    .round-row-header span:first-child { text-align: left; }
+
+    /* ── No data state ── */
+    .no-data {
+      text-align: center;
+      padding: 12px 0;
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(var(--cream-rgb),0.25);
+    }
+
+    .page-note {
+      text-align: center; margin-top: 28px;
+      font-size: 9px; letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: rgba(var(--gold-rgb),0.35);
+    }
+
+    @media (max-width: 700px) {
+      .pairing-grid { grid-template-columns: 1fr; }
+      .season-stats { grid-template-columns: repeat(3,1fr); }
+      .matchup__initials { font-size: 36px; }
+      .round-breakdown__inner { padding: 12px 16px 16px; }
+      .round-row { grid-template-columns: 0.5fr 1fr 1fr 1fr; }
+      .round-row-header { grid-template-columns: 0.5fr 1fr 1fr 1fr; }
+      .round-row__val:nth-child(5),
+      .round-row__val:nth-child(6),
+      .round-row-header span:nth-child(5),
+      .round-row-header span:nth-child(6) { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="rule-top"></div>
+  <a class="back" href="https://season0.pro/members/">←</a>
+
+  <main class="wrap">
+
+    <header class="header">
+      <span class="header__kicker">Season 0 · Members</span>
+      <h1 class="header__title">Pairings</h1>
+      <span class="header__sub" id="headerSub">Season Head-to-Head</span>
+    </header>
+
+    <div class="pairing-grid" id="pairingGrid"></div>
+
+    <p class="page-note" id="pageNote"></p>
+
+  </main>
+
+  <script>
+    const rPlayed = SEASON.roundsPlayed;
+
+    // ── Player lookup ─────────────────────────────────────
+    const playerById = {};
+    SEASON.players.forEach(p => playerById[p.id] = p);
+
+    // ── Build pairing data from rounds ───────────────────
+    // Since data.js pairings only has season totals (zeros until wired)
+    // we derive per-round pairing data from round scores for now
+    // and use SEASON.pairings for season totals
+
+    function moneyText(v) {
+      return v > 0 ? `+$${v}` : v < 0 ? `-$${Math.abs(v)}` : '$0';
+    }
+
+    function wlClass(w, l) {
+      if (w > l) return 'pos';
+      if (l > w) return 'neg';
+      return '';
+    }
+
+    // ── Build round breakdown per pairing ─────────────────
+    function getRoundData(pairId) {
+      const [p1, p2] = pairId.split('.');
+      return SEASON.rounds.map(r => {
+        const s1 = r.scores[p1];
+        const s2 = r.scores[p2];
+        if (!s1 || !s2) return null;
+
+        // Combined pts for this pair this round
+        const combinedPts = s1.pts + s2.pts;
+        const combinedMoney = s1.roundMoney + s2.roundMoney;
+
+        // Hole wins — both players won same holes (approximation from available data)
+        // Use average of both players hole wins as proxy until full hole data is wired
+        const w = Math.min(s1.holeWins, s2.holeWins);
+        const l = Math.min(s1.holeLosses, s2.holeLosses);
+        const h = s1.holeHalves;
+
+        return {
+          round: r.round,
+          date: r.date,
+          pts: combinedPts,
+          money: combinedMoney,
+          w, l, h
+        };
+      }).filter(Boolean);
+    }
+
+    // ── Sort pairings by season pts ───────────────────────
+    const sortedPairings = [...SEASON.pairings].sort((a, b) => b.seasonPts - a.seasonPts);
+
+    // ── Build cards ───────────────────────────────────────
+    document.getElementById("pairingGrid").innerHTML = sortedPairings.map((pair, idx) => {
+      const p1 = playerById[pair.p1];
+      const p2 = playerById[pair.p2];
+      const rounds = getRoundData(pair.id);
+
+      const winRate = pair.seasonHoles > 0
+        ? Math.round((pair.seasonWins / pair.seasonHoles) * 100)
+        : 0;
+
+      // Round breakdown rows
+      const roundRows = rounds.length > 0
+        ? `
+          <div class="round-row-header">
+            <span>Round</span>
+            <span>Pts</span>
+            <span>W</span>
+            <span>L</span>
+            <span>H</span>
+            <span>Money</span>
+          </div>
+          ${rounds.map(r => `
+            <div class="round-row">
+              <span class="round-row__label">R${r.round}</span>
+              <span class="round-row__val ${r.pts > 0 ? 'pos' : r.pts < 0 ? 'neg' : ''}">${r.pts > 0 ? '+' : ''}${r.pts}</span>
+              <span class="round-row__val">${r.w}</span>
+              <span class="round-row__val">${r.l}</span>
+              <span class="round-row__val">${r.h}</span>
+              <span class="round-row__val ${r.money > 0 ? 'pos' : r.money < 0 ? 'neg' : ''}">${moneyText(r.money)}</span>
+            </div>
+          `).join('')}
+        `
+        : `<div class="no-data">No rounds played yet</div>`;
+
+      return `
+        <div class="pairing-card reveal" style="animation-delay: ${idx * 0.06}s">
+          <div class="matchup">
+            <div class="matchup__player">
+              <span class="matchup__initials">${pair.p1}</span>
+              <span class="matchup__name">${p1.short}</span>
+            </div>
+            <span class="matchup__vs">vs</span>
+            <div class="matchup__player">
+              <span class="matchup__initials">${pair.p2}</span>
+              <span class="matchup__name">${p2.short}</span>
+            </div>
+          </div>
+
+          <div class="season-stats">
+            <div class="season-stat">
+              <span class="season-stat__value">${pair.seasonHoles || '—'}</span>
+              <span class="season-stat__label">Holes</span>
+            </div>
+            <div class="season-stat">
+              <span class="season-stat__value ${pair.seasonWins > pair.seasonLosses ? 'pos' : ''}">${pair.seasonWins || '—'}</span>
+              <span class="season-stat__label">Wins</span>
+            </div>
+            <div class="season-stat">
+              <span class="season-stat__value ${pair.seasonLosses > pair.seasonWins ? 'neg' : ''}">${pair.seasonLosses || '—'}</span>
+              <span class="season-stat__label">Losses</span>
+            </div>
+            <div class="season-stat">
+              <span class="season-stat__value">${pair.seasonHalves || '—'}</span>
+              <span class="season-stat__label">Halves</span>
+            </div>
+            <div class="season-stat">
+              <span class="season-stat__value ${pair.seasonPts > 0 ? 'pos' : pair.seasonPts < 0 ? 'neg' : ''}">${pair.seasonPts > 0 ? '+' : ''}${pair.seasonPts || '—'}</span>
+              <span class="season-stat__label">Pts</span>
+            </div>
+          </div>
+
+          <button class="expand-btn" onclick="toggleExpand(this)">
+            <span>Round Breakdown</span>
+            <span class="expand-btn__arrow">▼</span>
+          </button>
+
+          <div class="round-breakdown">
+            <div class="round-breakdown__inner">
+              <p class="round-breakdown__title">Round by Round</p>
+              ${roundRows}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // ── Toggle expand ─────────────────────────────────────
+    function toggleExpand(btn) {
+      const card = btn.closest('.pairing-card');
+      card.classList.toggle('expanded');
+      btn.querySelector('span:first-child').textContent =
+        card.classList.contains('expanded') ? 'Hide Breakdown' : 'Round Breakdown';
+    }
+
+    // ── Header ────────────────────────────────────────────
+    document.getElementById("headerSub").textContent =
+      `${rPlayed} Round${rPlayed !== 1 ? 's' : ''} Played · 6 Combinations`;
+    document.getElementById("pageNote").textContent =
+      `Season 0 · All stats through Round ${rPlayed}`;
+
+    // ── Scroll reveal ─────────────────────────────────────
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
 
